@@ -14,6 +14,9 @@ int main()
 	fopen_s(&fp3, "Character/Chorus_boy_default.txt", "rb");
 	fopen_s(&fp4, "Character/Chorus_boy_enter0.txt", "rb");
 
+	//
+	// 장효제 테스트
+	//
 	char* Word = new char[88];
 
 	if (fp == NULL)
