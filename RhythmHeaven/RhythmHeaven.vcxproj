@@ -129,9 +129,10 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
-    <ClCompile Include="anim.cpp" />
+    <ClCompile Include="Anim.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Anim.h" />
     <ClInclude Include="RenderSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -37,6 +37,9 @@ namespace render
 
 		consoleScreenX = csbi.dwSize.X;
 		consoleScreenY = csbi.dwSize.Y;
+
+		//콘솔 창 사이즈 조절
+		system("mode con cols=210 lines=75");
 	}
 
 	void ScreenRelease()
@@ -59,7 +62,8 @@ namespace render
 		for (int y = 0; y < consoleScreenY; y++)
 		{
 			Coor.Y = consoleScreenSize.Top + y;
-			FillConsoleOutputCharacter(GetScreenHandle(), ' ', consoleScreenX, Coor, &dw);
+			FillConsoleOutputCharacter(GetStdHandle(STD_OUTPUT_HANDLE), ' ', consoleScreenX, Coor, &dw);
+			//FillConsoleOutputCharacter(GetScreenHandle(), ' ', consoleScreenX, Coor, &dw);
 			//' '으로 updateScreenX만큼, 시작 좌표 : Coor, dw에 채운 문자 개수 저장
 		}
 	}
@@ -82,9 +86,12 @@ namespace render
 		DWORD dw;
 		COORD Cur = { x, y };
 		
-		SetConsoleCursorPosition(GetScreenHandle(), Cur);
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
+		//SetConsoleCursorPosition(GetScreenHandle(), Cur);
 
-		WriteFile(GetScreenHandle(), pStr, strlen(pStr), &dw, NULL);
+
+		WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), pStr, strlen(pStr), &dw, NULL);
+		//WriteFile(GetScreenHandle(), pStr, strlen(pStr), &dw, NULL);
 	}
 
 	HANDLE GetScreenHandle()
