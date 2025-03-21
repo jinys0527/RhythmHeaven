@@ -2,7 +2,7 @@
 using namespace std;
 
 int main()
-{//apfhdapfhd
+{//apfhdapfhd	
 	FILE* fp;
 	FILE* fp1;
 	FILE* fp2;
