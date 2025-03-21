@@ -127,8 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="anim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderSystem.h" />
