@@ -14,6 +14,14 @@ namespace anim
 		DrawCharacter(10, 40, "Character/Conductor.txt");
 	}
 
+	void DrawScreen(const char* filename1, const char* filename2, const char* filename3, const char* filename4)
+	{
+		DrawCharacter(70, 1, filename1);
+		DrawCharacter(120, 6, filename2);
+		DrawCharacter(170, 11, filename3);
+		DrawCharacter(10, 40, filename4);
+	}
+
 	void DrawCharacter(int x, int y, const char* filename)
 	{
 		FILE* fp;

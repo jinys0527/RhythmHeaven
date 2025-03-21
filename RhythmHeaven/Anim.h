@@ -11,5 +11,7 @@ namespace anim
 
 	void StartGame();
 
+	void DrawScreen(const char* filename1, const char* filename2, const char* filename3, const char* filename4);
+
 	void DrawCharacter(int x, int y, const char* filename);
 }
