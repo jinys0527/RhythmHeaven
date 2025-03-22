@@ -93,6 +93,11 @@ namespace render
 		WriteFile(GetScreenHandle(), pStr, strlen(pStr), &dw, NULL);
 	}
 
+	bool GetIndex()
+	{
+		return bScreenIndex;
+	}
+
 	HANDLE GetScreenHandle()
 	{
 		int index = (bScreenIndex ? 1 : 0);

@@ -11,6 +11,8 @@ namespace render
 
 	void ScreenDraw(int x, int y, const char c);
 	void ScreenDraw(int x, int y, const char* pStr);
+	
+	bool GetIndex();
 
 	HANDLE GetScreenHandle();
 	void GotoXY(int x, int y);

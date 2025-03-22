@@ -6,10 +6,21 @@
 void Render()
 {
 	render::ScreenClear();
-	anim::DrawScreen("Character/Chorus_boys_shame.txt", 
-		"Character/Chorus_boys_shame.txt", 
-		"Character/Chorus_boys_default.txt", 
-		"Character/Conductor.txt");
+	if (render::GetIndex())
+	{
+		anim::DrawScreen("Character/Chorus_boys_shame.txt",
+			"Character/Chorus_boys_shame.txt",
+			"Character/Chorus_boys_default.txt",
+			"Character/Conductor.txt");
+	}
+	else
+	{
+		anim::DrawScreen("Character/Chorus_boys_default.txt",
+			"Character/Chorus_boys_default.txt",
+			"Character/Chorus_boys_default.txt",
+			"Character/Conductor.txt");
+	}
+	
 	render::ScreenFlipping();
 	//Print
 }
@@ -17,12 +28,24 @@ void Render()
 int main()
 {
 	anim::StartGame();
-	system("cls");
+
+	ULONGLONG nowTick = GetTickCount64();
+	ULONGLONG prevTick = nowTick;
+
+	Render();
 	while (1)//IsGameRun())
 	{
 		//ProcessInput();
 		//Update();
-		Render();
+		nowTick = GetTickCount64();
+
+		ULONGLONG elapsedTick = nowTick - prevTick;
+		if (elapsedTick >= 1000)
+		{
+			Render();
+
+			prevTick = nowTick;
+		}
 	}
 	//EndGame();*/
 
