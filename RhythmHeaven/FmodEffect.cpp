@@ -1,4 +1,5 @@
 #include "FmodEffect.h"
+#include "inc/fmod_errors.h"
 
 namespace effectsound
 {
@@ -21,6 +22,23 @@ namespace effectsound
 	Channel* gEffectChannel4; //conductor
 
 
+	Channel* GetChannel(int num)
+	{
+		switch (num)
+		{
+		case 1:
+			return gEffectChannel1;
+		case 2:
+			return gEffectChannel2;
+		case 3:
+			return gEffectChannel3;
+		case 4:
+			return gEffectChannel4;
+		default:
+			return nullptr;
+		}
+	}
+
 	void EffectSoundSetUp()
 	{
 		resultEffect = System_Create(&gEffectSystem);
@@ -31,12 +49,12 @@ namespace effectsound
 		{
 			if (i == 1)
 			{
-				sprintf_s(str, "Media/e_%d.wav", i);
+				sprintf_s(str, "Media/e%d.mp3", i);
 				gEffectSystem->createSound(str, FMOD_LOOP_NORMAL, 0, &gEffectSound[i]);
 			}
 			else
 			{
-				sprintf_s(str, "Media/e_%d.wav", i + 1);
+				sprintf_s(str, "Media/e%d.mp3", i + 1);
 				gEffectSystem->createSound(str, FMOD_LOOP_OFF, 0, &gEffectSound[i]);
 			}
 		}
@@ -45,10 +63,15 @@ namespace effectsound
 	void EffectPlaySound(int soundNum, Channel* gEffectChannel)
 	{
 		gEffectSystem->playSound(gEffectSound[soundNum], 0, false, &gEffectChannel);
+		gEffectChannel->setVolume(0.3f);
 	}
 
 	void ReleaseEffectSound()
 	{
 		gEffectSystem->release();
+	}
+	void Update()
+	{
+		gEffectSystem->update();
 	}
 }

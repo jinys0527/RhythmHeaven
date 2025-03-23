@@ -29,6 +29,7 @@ namespace sound
 	void Playsound(int soundNum)
 	{
 		gSystem->playSound(gSound[soundNum], 0, false, &gChannel);
+		gChannel->setVolume(0.5f);
 	}
 
 	void Pausesound()

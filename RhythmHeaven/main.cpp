@@ -2,6 +2,9 @@
 #include <Windows.h>
 #include "Anim.h"
 #include "RenderSystem.h"
+#include "InputSystem.h"
+#include "Fmod.h"
+#include "FmodEffect.h"
 
 // 애니메이션 상태를 관리하는 기본 값
 int currentAnimationState = 0;
@@ -15,6 +18,7 @@ void Render()
 
 void ProcessInput()
 {
+    input::UpdateInput();
     // 예시 - 키 입력에 따라 애니메이션 시작
     if (GetAsyncKeyState('1') & 0x8000)
     {
@@ -43,6 +47,11 @@ void ProcessInput()
     }
 }
 
+void Update()
+{
+    effectsound::Update();
+}
+
 int main()
 {
     anim::StartGame();
@@ -51,12 +60,16 @@ int main()
     ULONGLONG prevTick = nowTick;
     ULONGLONG animTick = nowTick;
 
+    sound::SoundSetUp();
+    effectsound::EffectSoundSetUp();
+    sound::Playsound(0);
+
     Render();
 
     while (1) //IsGameRun())
     {
         ProcessInput(); // 입력 처리 활성화
-
+        Update();
         nowTick = GetTickCount64();
 
         // 애니메이션 업데이트 (200ms 마다)
