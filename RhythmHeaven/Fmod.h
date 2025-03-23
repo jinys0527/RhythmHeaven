@@ -7,7 +7,6 @@ using namespace FMOD;
 namespace sound
 {
 	void SoundSetUp();
-
 	void Playsound(int soundNum);
 	void Pausesound();
 	void Releasesound();
