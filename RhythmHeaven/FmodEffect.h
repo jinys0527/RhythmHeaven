@@ -4,7 +4,7 @@
 
 using namespace FMOD;
 
-namespace fmodeffect
+namespace effectsound
 {
 	void EffectSoundSetUp();
 	void EffectPlaySound(int soundNum, Channel* gEffectChannel);

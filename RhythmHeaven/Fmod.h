@@ -4,7 +4,7 @@
 
 using namespace FMOD;
 
-namespace fmod
+namespace sound
 {
 	void SoundSetUp();
 	void Playsound(int soundNum);

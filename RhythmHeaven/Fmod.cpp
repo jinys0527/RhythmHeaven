@@ -1,6 +1,6 @@
 #include "Fmod.h"
 
-namespace fmod
+namespace sound
 {
 	enum Sounds
 	{

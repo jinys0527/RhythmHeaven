@@ -1,6 +1,6 @@
 #include "FmodEffect.h"
 
-namespace fmodeffect
+namespace effectsound
 {
 	enum EffectSounds
 	{
