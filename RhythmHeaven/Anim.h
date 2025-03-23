@@ -21,10 +21,15 @@ namespace anim
         bool isAnimating;             // 애니메이션 중인지 여부
     };
 
+    void InitCharacter(Character* character, int x, int y, 
+                    const char* currentFrame, AnimState currentState, 
+                    int frameIndex, bool isAnimating); //초기화 함수
+
     void StartGame();
     void DrawScreen();
     void DrawCharacter(int x, int y, const char* filename);
     void UpdateAnimation();
+    void ResetState(Character* character, bool isAnimating, AnimState currentState);
     void StartAnimation(int characterIndex, AnimState state);
     bool IsAnimating();
 }

@@ -32,7 +32,12 @@ namespace anim
         "Character/Chorus_boys_enter3.txt",
         "Character/Chorus_boys_enter2.txt",
         "Character/Chorus_boys_enter1.txt",
-        "Character/Chorus_boys_enter0.txt"
+        "Character/Chorus_boys_enter0.txt",
+        "Character/Chorus_boys_enter1.txt",
+        "Character/Chorus_boys_enter2.txt",
+        "Character/Chorus_boys_enter3.txt",
+        "Character/Chorus_boys_slience.txt"
+
     };
 
     const char* muteShoutFrames[] = {
@@ -55,38 +60,28 @@ namespace anim
     const int muteShoutFrameCount = sizeof(muteShoutFrames) / sizeof(muteShoutFrames[0]);
     const int shameFrameCount = sizeof(shameFrames) / sizeof(shameFrames[0]);
 
+    void InitCharacter(Character* character, int x, int y, const char* currentFrame, AnimState currentState, int frameIndex, bool isAnimating)
+    {
+        character->x = x;
+        character->y = y;
+        character->currentFrame = currentFrame;
+        character->currentState = currentState;
+        character->frameIndex = frameIndex;
+        character->isAnimating = isAnimating;
+    }
+
     void StartGame()
     {
         render::InitScreen();
 
-        // 캐릭터 초기화
-        characters[0].x = 70;
-        characters[0].y = 1;
-        characters[0].currentFrame = "Character/Chorus_boys_default.txt";
-        characters[0].currentState = NONE;
-        characters[0].frameIndex = 0;
-        characters[0].isAnimating = false;
-
-        characters[1].x = 120;
-        characters[1].y = 6;
-        characters[1].currentFrame = "Character/Chorus_boys_default.txt";
-        characters[1].currentState = NONE;
-        characters[1].frameIndex = 0;
-        characters[1].isAnimating = false;
-
-        characters[2].x = 170;
-        characters[2].y = 11;
-        characters[2].currentFrame = "Character/Chorus_boys_default.txt";
-        characters[2].currentState = NONE;
-        characters[2].frameIndex = 0;
-        characters[2].isAnimating = false;
-
-        characters[3].x = 10;
-        characters[3].y = 40;
-        characters[3].currentFrame = "Character/Conductor.txt";
-        characters[3].currentState = NONE;
-        characters[3].frameIndex = 0;
-        characters[3].isAnimating = false;
+        //코러스 1
+        InitCharacter(&characters[0], 70, 1, "Character/Chorus_boys_default.txt", NONE, 0, false);
+        //코러스 2
+        InitCharacter(&characters[1], 120, 6, "Character/Chorus_boys_default.txt", NONE, 0, false);
+        //플레이어
+        InitCharacter(&characters[2], 170, 11, "Character/Chorus_boys_default.txt", NONE, 0, false);
+        //지휘자
+        InitCharacter(&characters[3], 10, 40, "Character/Conductor.txt", NONE, 0, false);
 
         // 최초 화면 출력
         DrawScreen();
@@ -136,55 +131,66 @@ namespace anim
             {
             case CHANT:
                 if (characters[i].frameIndex < chantFrameCount)
+                {
                     characters[i].currentFrame = chantFrames[characters[i].frameIndex];
+                }
                 else
                 {
-                    characters[i].isAnimating = false;
-                    characters[i].currentState = NONE;
+                    ResetState(&characters[i], false, NONE);
                 }
                 break;
 
             case MUTE_CHANT:
                 if (characters[i].frameIndex < muteChantFrameCount)
+                {
                     characters[i].currentFrame = muteChantFrames[characters[i].frameIndex];
+                }
                 else
                 {
-                    characters[i].isAnimating = false;
-                    characters[i].currentState = NONE;
+                    ResetState(&characters[i], false, NONE);
                 }
                 break;
 
             case SHOUT:
                 if (characters[i].frameIndex < shoutFrameCount)
+                {
                     characters[i].currentFrame = shoutFrames[characters[i].frameIndex];
+                }
                 else
                 {
-                    characters[i].isAnimating = false;
-                    characters[i].currentState = NONE;
+                    ResetState(&characters[i], false, NONE);
                 }
                 break;
 
             case MUTE_SHOUT:
                 if (characters[i].frameIndex < muteShoutFrameCount)
+                {
                     characters[i].currentFrame = muteShoutFrames[characters[i].frameIndex];
+                }
                 else
                 {
-                    characters[i].isAnimating = false;
-                    characters[i].currentState = NONE;
+                    ResetState(&characters[i], false, NONE);
                 }
                 break;
 
             case SHAME:
                 if (characters[i].frameIndex < shameFrameCount)
+                {
                     characters[i].currentFrame = shameFrames[characters[i].frameIndex];
+                }
                 else
                 {
-                    characters[i].isAnimating = false;
-                    characters[i].currentState = NONE;
+                    ResetState(&characters[i], false, NONE);
                 }
                 break;
             }
         }
+    }
+
+    void ResetState(Character* character, bool isAnimating, AnimState currentState)
+    {
+        character->isAnimating = isAnimating;
+        character->currentState = currentState;
     }
 
     void StartAnimation(int characterIndex, AnimState state)

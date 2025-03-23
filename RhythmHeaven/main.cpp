@@ -20,23 +20,7 @@ void ProcessInput()
 {
     input::UpdateInput();
     // 예시 - 키 입력에 따라 애니메이션 시작
-    if (GetAsyncKeyState('1') & 0x8000)
-    {
-        anim::StartAnimation(2, anim::CHANT); // 세 번째 캐릭터 말하기 애니메이션
-    }
-    if (GetAsyncKeyState('2') & 0x8000)
-    {
-        anim::StartAnimation(2, anim::MUTE_CHANT); // 세 번째 캐릭터 조용해지는 애니메이션
-    }
-    if (GetAsyncKeyState('3') & 0x8000)
-    {
-        anim::StartAnimation(2, anim::SHOUT); // 세 번째 캐릭터 입장 애니메이션
-    }
-
-    if (GetAsyncKeyState('4') & 0x8000)
-    {
-        anim::StartAnimation(2, anim::MUTE_SHOUT); // 세 번째 캐릭터 입장 애니메이션
-    }
+   
     if (GetAsyncKeyState('5') & 0x8000)
     {
         // 모든 캐릭터에 shame 애니메이션 적용
@@ -63,6 +47,7 @@ int main()
     sound::SoundSetUp();
     effectsound::EffectSoundSetUp();
     sound::Playsound(0);
+    effectsound::EffectPlaySound(1, effectsound::GetChannel(3));
 
     Render();
 
@@ -72,8 +57,8 @@ int main()
         Update();
         nowTick = GetTickCount64();
 
-        // 애니메이션 업데이트 (200ms 마다)
-        if (nowTick - animTick >= 200)
+        // 애니메이션 업데이트 (33ms 마다)
+        if (nowTick - animTick >= 33)
         {
             anim::UpdateAnimation();
             animTick = nowTick;

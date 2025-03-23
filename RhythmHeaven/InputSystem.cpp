@@ -2,10 +2,14 @@
 #include <cassert>
 #include <windows.h>
 #include "FmodEffect.h"
+#include "Anim.h"
+#include "inc/fmod_errors.h"
 
 namespace input
 {
 	bool inputKeyTable[MAX_KEY];
+
+	bool wasSpacePressed = false;
 
 	void Set(const int keyIndex, bool bOn)
 	{
@@ -41,6 +45,8 @@ namespace input
 
 	void UpdateInput()
 	{
+		bool isSpacePressed = (GetKeyState(VK_SPACE) & 0x8000) != 0;
+		
 		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
 		{
 			input::Set(ESCAPE_KEY_INDEX, true);
@@ -68,24 +74,30 @@ namespace input
 			input::Set(USER_CMD_DOWN, false);
 		}
 
-		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+		if (isSpacePressed && !wasSpacePressed)
 		{
 			input::Set(USER_CMD_SPACE, true);
-			effectsound::EffectPlaySound(0, effectsound::GetChannel(1));
-			effectsound::EffectPlaySound(0, effectsound::GetChannel(2));
+			anim::StartAnimation(2, anim::MUTE_CHANT); // 세 번째 캐릭터 조용해지는 애니메이션
+ 			effectsound::PauseChannel(effectsound::GetChannel(3));
+			effectsound::EffectPlaySound(3, effectsound::GetChannel(4));
 		}
-		else
+		else if(!isSpacePressed && wasSpacePressed)
 		{
-			input::Set(USER_CMD_SPACE, false);
+			input::Set(USER_CMD_SPACE, false); 
+			anim::StartAnimation(2, anim::CHANT); // 세 번째 캐릭터 말하기 애니메이션
+			effectsound::UnpauseChannel(effectsound::GetChannel(3));
 		}
 
-		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+		if (isSpacePressed && GetAsyncKeyState(VK_RETURN) & 0x8000)
 		{
 			input::Set(USER_CMD_ENTER, true);
+			anim::StartAnimation(2, anim::SHOUT); // 세 번째 캐릭터 샤우트 애니메이션
+			effectsound::EffectPlaySound(2, effectsound::GetChannel(5));
 		}
 		else
 		{
 			input::Set(USER_CMD_ENTER, false);
 		}
+		wasSpacePressed = isSpacePressed;
 	}
 }

@@ -5,24 +5,26 @@ namespace effectsound
 {
 	enum EffectSounds
 	{
-		SD_Ah = 0,     // 코러스 : e_1.wav
-		SD_AhPlayer,   // 코러스 player 버전 : e_1.wav
-		SD_Shout,      // 샤우트 : e_2.wav
-		SD_Close,      // 입 닫는 소리 : e_3.wav
-		SD_Together,   // Together : e_4.wav
+		SD_Ah = 0,     // 코러스 : e1.mp3
+		SD_AhPlayer,   // 코러스 Player 버전 : e1.mp3
+		SD_Shout,      // 샤우트 : e2.mp3
+		SD_Close,      // 입 닫는 소리 : e3.mp3
+		SD_Together,   // Together : e4.mp3
 		SD_EffectSize
 	};
 
 	System* gEffectSystem;
 	Sound* gEffectSound[SD_EffectSize];
 	FMOD_RESULT resultEffect;
+	
 	Channel* gEffectChannel1; //chorus1
 	Channel* gEffectChannel2; //chorus2
 	Channel* gEffectChannel3; //player
-	Channel* gEffectChannel4; //conductor
+	Channel* gEffectChannel4; //player(close)
+	Channel* gEffectChannel5; //player(shout)
+	Channel* gEffectChannel6; //conductor
 
-
-	Channel* GetChannel(int num)
+	Channel*& GetChannel(int num)
 	{
 		switch (num)
 		{
@@ -34,8 +36,8 @@ namespace effectsound
 			return gEffectChannel3;
 		case 4:
 			return gEffectChannel4;
-		default:
-			return nullptr;
+		case 5:
+			return gEffectChannel5;
 		}
 	}
 
@@ -47,20 +49,27 @@ namespace effectsound
 		char str[128];
 		for (int i = 0; i < SD_EffectSize; i++)
 		{
-			if (i == 1)
-			{
-				sprintf_s(str, "Media/e%d.mp3", i);
-				gEffectSystem->createSound(str, FMOD_LOOP_NORMAL, 0, &gEffectSound[i]);
-			}
-			else
+			if (i == 0)
 			{
 				sprintf_s(str, "Media/e%d.mp3", i + 1);
 				gEffectSystem->createSound(str, FMOD_LOOP_OFF, 0, &gEffectSound[i]);
 			}
+			else if (i != 1)
+			{
+				sprintf_s(str, "Media/e%d.mp3", i);
+				gEffectSystem->createSound(str, FMOD_LOOP_OFF, 0, &gEffectSound[i]);
+			}
+			else
+			{
+				sprintf_s(str, "Media/e%d.mp3", i);
+				gEffectSystem->createSound(str, FMOD_LOOP_NORMAL, 0, &gEffectSound[i]);
+				gEffectSound[i]->setMusicSpeed(0.15f);
+				gEffectSound[i]->setLoopPoints(50, FMOD_TIMEUNIT_MS, 550, FMOD_TIMEUNIT_MS);
+			}
 		}
 	}
 
-	void EffectPlaySound(int soundNum, Channel* gEffectChannel)
+	void EffectPlaySound(int soundNum, Channel*& gEffectChannel)
 	{
 		gEffectSystem->playSound(gEffectSound[soundNum], 0, false, &gEffectChannel);
 		gEffectChannel->setVolume(0.3f);
@@ -70,8 +79,18 @@ namespace effectsound
 	{
 		gEffectSystem->release();
 	}
+
 	void Update()
 	{
 		gEffectSystem->update();
+	}
+
+	void PauseChannel(Channel*& gEffectChannel)
+	{
+		gEffectChannel->setPaused(true);		
+	}
+	void UnpauseChannel(Channel*& gEffectChannel)
+	{
+		gEffectChannel->setPaused(false);
 	}
 }
