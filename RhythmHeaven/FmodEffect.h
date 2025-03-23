@@ -7,6 +7,7 @@ using namespace FMOD;
 namespace effectsound
 {
 	void EffectSoundSetUp();
-	void EffectPlaySound(int soundNum, Channel* gEffectChannel);
+	void EffectPlaySound(int soundNum);
 	void ReleaseEffectSound();
+	void Update();
 }

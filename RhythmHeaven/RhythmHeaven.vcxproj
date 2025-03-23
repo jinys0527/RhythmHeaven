@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="Fmod.cpp" />
     <ClCompile Include="FmodEffect.cpp" />
+    <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Anim.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Anim.h" />
     <ClInclude Include="Fmod.h" />
     <ClInclude Include="FmodEffect.h" />
+    <ClInclude Include="InputSystem.h" />
     <ClInclude Include="RenderSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
