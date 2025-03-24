@@ -42,7 +42,6 @@ int main()
 
     ULONGLONG nowTick = GetTickCount64();
     ULONGLONG prevTick = nowTick;
-    ULONGLONG animTick = nowTick;
 
     sound::SoundSetUp();
     effectsound::EffectSoundSetUp();
@@ -57,12 +56,7 @@ int main()
         Update();
         nowTick = GetTickCount64();
 
-        // 애니메이션 업데이트 (33ms 마다)
-        if (nowTick - animTick >= 33)
-        {
-            anim::UpdateAnimation();
-            animTick = nowTick;
-        }
+        anim::UpdateAnimation(); //애니메이션 업데이트
 
         // 화면 렌더링 (33ms 마다 - 약 30fps)
         if (nowTick - prevTick >= 33)

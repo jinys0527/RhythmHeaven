@@ -38,6 +38,8 @@ namespace effectsound
 			return gEffectChannel4;
 		case 5:
 			return gEffectChannel5;
+		case 6:
+			return gEffectChannel6;
 		}
 	}
 

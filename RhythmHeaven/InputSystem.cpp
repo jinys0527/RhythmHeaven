@@ -47,6 +47,11 @@ namespace input
 	{
 		bool isSpacePressed = (GetKeyState(VK_SPACE) & 0x8000) != 0;
 		
+		if (anim::IsShoutAnimating())
+		{
+			return;
+		}
+
 		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
 		{
 			input::Set(ESCAPE_KEY_INDEX, true);
@@ -92,7 +97,6 @@ namespace input
 		{
 			input::Set(USER_CMD_ENTER, true);
 			anim::StartAnimation(2, anim::SHOUT); // 세 번째 캐릭터 샤우트 애니메이션
-			effectsound::EffectPlaySound(2, effectsound::GetChannel(5));
 		}
 		else
 		{

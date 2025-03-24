@@ -19,8 +19,10 @@ namespace anim
         AnimState currentState;       // 현재 애니메이션 상태
         int frameIndex;               // 현재 프레임 인덱스
         bool isAnimating;             // 애니메이션 중인지 여부
+        ULONGLONG lastAnimTick;       // 각 캐릭터별 애니메이션 타이머 추가
     };
 
+    
     void InitCharacter(Character* character, int x, int y, 
                     const char* currentFrame, AnimState currentState, 
                     int frameIndex, bool isAnimating); //초기화 함수
@@ -29,7 +31,10 @@ namespace anim
     void DrawScreen();
     void DrawCharacter(int x, int y, const char* filename);
     void UpdateAnimation();
+    void UpdateAnimation(Character* character);
     void ResetState(Character* character, bool isAnimating, AnimState currentState);
     void StartAnimation(int characterIndex, AnimState state);
-    bool IsAnimating();
+    bool IsShoutAnimating();
+
+    void UpdateAIAnimation(note::Note*& note, int noteSize, unsigned long long currentTime);
 }
