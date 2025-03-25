@@ -26,7 +26,7 @@ void ProcessInput()
         // 모든 캐릭터에 shame 애니메이션 적용
         for (int i = 0; i < 2; i++)
         {
-            anim::StartAnimation(i, anim::SHAME);
+            anim::StartAnimation(anim::GetCharacter(i), anim::SHAME);
         }
     }
 }
@@ -47,6 +47,7 @@ int main()
     effectsound::EffectSoundSetUp();
     sound::Playsound(0);
     effectsound::EffectPlaySound(1, effectsound::GetChannel(3));
+    note::InitNote();
 
     Render();
 

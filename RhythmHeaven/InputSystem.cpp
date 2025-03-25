@@ -82,21 +82,21 @@ namespace input
 		if (isSpacePressed && !wasSpacePressed)
 		{
 			input::Set(USER_CMD_SPACE, true);
-			anim::StartAnimation(2, anim::MUTE_CHANT); // 세 번째 캐릭터 조용해지는 애니메이션
+			anim::StartAnimation(anim::GetCharacter(2), anim::MUTE_CHANT); // 세 번째 캐릭터 조용해지는 애니메이션
  			effectsound::PauseChannel(effectsound::GetChannel(3));
 			effectsound::EffectPlaySound(3, effectsound::GetChannel(4));
 		}
 		else if(!isSpacePressed && wasSpacePressed)
 		{
 			input::Set(USER_CMD_SPACE, false); 
-			anim::StartAnimation(2, anim::CHANT); // 세 번째 캐릭터 말하기 애니메이션
+			anim::StartAnimation(anim::GetCharacter(2), anim::CHANT); // 세 번째 캐릭터 말하기 애니메이션
 			effectsound::UnpauseChannel(effectsound::GetChannel(3));
 		}
 
 		if (isSpacePressed && GetAsyncKeyState(VK_RETURN) & 0x8000)
 		{
 			input::Set(USER_CMD_ENTER, true);
-			anim::StartAnimation(2, anim::SHOUT); // 세 번째 캐릭터 샤우트 애니메이션
+			anim::StartAnimation(anim::GetCharacter(2), anim::SHOUT); // 세 번째 캐릭터 샤우트 애니메이션
 		}
 		else
 		{

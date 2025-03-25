@@ -1,39 +1,55 @@
 #include "Note.h"
-
+#include <iostream>
 namespace note
 {
+	Note* Note_Player = nullptr;
+	Note* Note_Chorus1 = nullptr;
+	Note* Note_Chorus2 = nullptr;
+
 	void InitNote() //ms단위 노트 초기화
 	{
-		Note Notes_Player[22] = { {12070, 13110, Chorus_Do}, {19270, 20130, Chorus_Do}, {20210, 21120, Chorus_Do},
-								{27040, 27160, Chorus_Fa}, {27180, 27220, Chorus_Fa}, {27240, 27280, Chorus_Fa},
-								{28000, 28080, Chorus_Fa}, {33110, 34210, Chorus_Do}, {35180, 36100, Shout},
-								{43030, 45000, Chorus_Fa}, {45270, 46190, Shout}, {58210, 60200, Chorus_Do},
-								{66080, 68050, Chorus_Fa}, {69090, 70010, Shout}, {75060, 75100, Chorus_Do},
-								{75140, 75260, Chorus_Do}, {76020, 76140, Chorus_Do}, {80250, 80290, Chorus_Fa},
-								{81030, 81150, Chorus_Fa}, {81210, 82030, Chorus_Fa}, {87060, 88060, Chorus_Do},
-								{89050, 89270, Shout} };
+		Note notes_Player[22] = { {12070, 13110, noteType::Chorus_Do, 0}, {19270, 20130, noteType::Chorus_Do, 0}, {20210, 21120, noteType::Chorus_Do, 0},
+								{27040, 27160, noteType::Chorus_Fa, 0}, {27180, 27220, noteType::Chorus_Fa, 0}, {27240, 27280, noteType::Chorus_Fa, 0},
+								{28000, 28080, noteType::Chorus_Fa, 0}, {33110, 34210, noteType::Chorus_Do, 0}, {35180, 36100, noteType::Shout, 0},
+								{43030, 45000, noteType::Chorus_Fa, 0}, {45270, 46190, noteType::Shout, 0}, {58210, 60200, noteType::Chorus_Do, 0},
+								{66080, 68050, noteType::Chorus_Fa, 0}, {69090, 70010, noteType::Shout, 0}, {75060, 75100, noteType::Chorus_Do, 0},
+								{75140, 75260, noteType::Chorus_Do, 0}, {76020, 76140, noteType::Chorus_Do, 0}, {80250, 80290, noteType::Chorus_Fa, 0},
+								{81030, 81150, noteType::Chorus_Fa, 0}, {81210, 82030, noteType::Chorus_Fa, 0}, {87060, 88060, noteType::Chorus_Do, 0},
+								{89050, 89270, noteType::Shout, 0} };
 
-		Note Notes_Chorus1[22] = { {8150, 9190, Chorus}, {16030, 16190, Chorus}, {16270, 17180, Chorus},
-								{23240, 24060, Chorus}, {24080, 24120, Chorus}, {24140, 24180, Chorus},
-								{24200, 24280, Chorus}, {31170, 34210, Chorus}, {35180, 36100, Shout},
-								{39090, 41060, Chorus}, {45270, 46190, Shout}, {54270, 56240, Chorus},
-								{62140, 64110, Chorus}, {69090, 70010, Shout}, {72120, 72160, Chorus},
-								{72200, 73020, Chorus}, {73080, 73200, Chorus}, {78010, 78050, Chorus},
-								{78090, 78210, Chorus}, {78270, 79090, Chorus}, {85260, 88060, Chorus},
-								{89050, 89270, Shout} };
+		Note notes_Chorus1[22] = { {8150, 9190, noteType::Chorus, 0}, {16030, 16190, noteType::Chorus, 0}, {16270, 17180, noteType::Chorus, 0},
+								{23240, 24060, noteType::Chorus, 0}, {24080, 24120, noteType::Chorus, 0}, {24140, 24180, noteType::Chorus, 0},
+								{24200, 24280, noteType::Chorus, 0}, {31170, 34210, noteType::Chorus, 0}, {35180, 36100, noteType::Shout, 0},
+								{39090, 41060, noteType::Chorus, 0}, {45270, 46190, noteType::Shout, 0}, {54270, 56240, noteType::Chorus, 0},
+								{62140, 64110, noteType::Chorus, 0}, {69090, 70010, noteType::Shout, 0}, {72120, 72160, noteType::Chorus, 0},
+								{72200, 73020, noteType::Chorus, 0}, {73080, 73200, noteType::Chorus, 0}, {78010, 78050, noteType::Chorus, 0},
+								{78090, 78210, noteType::Chorus, 0}, {78270, 79090, noteType::Chorus, 0}, {85260, 88060, noteType::Chorus, 0},
+								{89050, 89270, noteType::Shout, 0} };
 
-		Note Notes_Chorus2[22] = { {10110, 11150, Chorus}, {18000, 18160, Chorus}, {18240, 19150, Chorus},
-								{25140, 25260, Chorus}, {25280, 26020, Chorus}, {26040, 26080, Chorus},
-								{26100, 26180, Chorus}, {32140, 34210, Chorus}, {35180, 36100, Shout},
-								{41060, 43030, Chorus}, {45270, 46190, Shout}, {56240, 58210, Chorus},
-								{64110, 66080, Chorus}, {69090, 70010, Shout}, {73240, 73280, Chorus},
-								{74020, 74140, Chorus}, {74020, 75020, Chorus}, {79130, 79170, Chorus},
-								{79210, 80030, Chorus}, {80090, 80210, Chorus}, {86160, 88060, Chorus},
-								{89050, 89270, Shout} };
+		Note notes_Chorus2[22] = { {10110, 11150, noteType::Chorus, 0}, {18000, 18160, noteType::Chorus, 0}, {18240, 19150, noteType::Chorus, 0},
+								{25140, 25260, noteType::Chorus, 0}, {25280, 26020, noteType::Chorus, 0}, {26040, 26080, noteType::Chorus, 0},
+								{26100, 26180, noteType::Chorus, 0}, {32140, 34210, noteType::Chorus, 0}, {35180, 36100, noteType::Shout, 0},
+								{41060, 43030, noteType::Chorus, 0}, {45270, 46190, noteType::Shout, 0}, {56240, 58210, noteType::Chorus, 0},
+								{64110, 66080, noteType::Chorus, 0}, {69090, 70010, noteType::Shout, 0}, {73240, 73280, noteType::Chorus, 0},
+								{74020, 74140, noteType::Chorus, 0}, {74020, 75020, noteType::Chorus, 0}, {79130, 79170, noteType::Chorus, 0},
+								{79210, 80030, noteType::Chorus, 0}, {80090, 80210, noteType::Chorus, 0}, {86160, 88060, noteType::Chorus, 0},
+								{89050, 89270, noteType::Shout, 0} };
 
-		Note_Player = Notes_Player;
-		Note_Chorus1 = Notes_Chorus1;
-		Note_Chorus2 = Notes_Chorus2;
+		Note_Player = notes_Player;
+		Note_Chorus1 = notes_Chorus1;
+		Note_Chorus2 = notes_Chorus2;
+		
+		CalcDuration(Note_Player, 22);
+		CalcDuration(Note_Chorus1, 22);
+		CalcDuration(Note_Chorus2, 22);
+	}
+
+	void CalcDuration(Note*& note, int size)
+	{
+		for (int i = 0; i < size; i++)
+		{
+			note[i].duration = note[i].endTime - note[i].startTime;
+		}
 	}
 
 	Note*& GetNotes(int num)

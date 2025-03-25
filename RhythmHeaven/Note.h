@@ -15,12 +15,10 @@ namespace note
 		unsigned long long startTime; //ms단위
 		unsigned long long endTime;   //ms단위
 		noteType curNoteType;
+		unsigned long long duration;  //ms단위
 	};
 
-	Note* Note_Player;
-	Note* Note_Chorus1;
-	Note* Note_Chorus2;
-
 	void InitNote();
+	void CalcDuration(Note*& note, int size);
 	Note*& GetNotes(int num);
 }
