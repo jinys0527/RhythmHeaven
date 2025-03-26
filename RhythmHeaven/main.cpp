@@ -59,7 +59,7 @@ int main()
 
         anim::UpdateAnimation(); //애니메이션 업데이트
 
-        // 화면 렌더링 (33ms 마다 - 약 30fps)
+        //화면 렌더링 (33ms 마다 - 약 30fps)
         if (nowTick - prevTick >= 33)
         {
             Render();

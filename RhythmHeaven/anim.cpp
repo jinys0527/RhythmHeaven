@@ -147,12 +147,11 @@ namespace anim
 
 	void UpdateAnimation()
 	{
+		UpdateAIAnimation(GetCharacter(0), note::GetNotes(1), 22);
+		UpdateAIAnimation(GetCharacter(1), note::GetNotes(2), 22);
 		UpdateAnimation(GetCharacter(0));
 		UpdateAnimation(GetCharacter(1));
 		UpdateAnimation(GetCharacter(2));
-
-		UpdateAIAnimation(GetCharacter(0), note::GetNotes(1), 22);
-		UpdateAIAnimation(GetCharacter(1), note::GetNotes(2), 22);
 	}
 
 	void UpdateAnimation(Character*& character)
