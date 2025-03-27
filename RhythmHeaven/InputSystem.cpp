@@ -4,6 +4,8 @@
 #include "FmodEffect.h"
 #include "Anim.h"
 #include "inc/fmod_errors.h"
+#include "ScoreSystem.h"
+#include "Note.h"
 
 namespace input
 {
@@ -131,12 +133,15 @@ namespace input
 			AddToBuffer(USER_CMD_SPACE);
 			anim::StartAnimation(anim::GetCharacter(2), anim::MUTE_CHANT); // 세 번째 캐릭터 조용해지는 애니메이션
  			effectsound::PauseChannel(effectsound::GetChannel(0));
+			score::JudgeEndTime(anim::GetCharacter(2), note::GetNotes(anim::GetCharacter(2)));
+
 		}
 		else if(!isSpacePressed && wasSpacePressed)
 		{
 			input::Set(USER_CMD_SPACE, false); 
 			anim::StartAnimation(anim::GetCharacter(2), anim::CHANT); // 세 번째 캐릭터 말하기 애니메이션
 			effectsound::UnpauseChannel(effectsound::GetChannel(0));
+			score::JudgeStartTime(anim::GetCharacter(2), note::GetNotes(anim::GetCharacter(2)));
 		}
 
 		if (isSpacePressed && GetAsyncKeyState(VK_RETURN) & 0x8000)
@@ -144,6 +149,7 @@ namespace input
 			input::Set(USER_CMD_ENTER, true);
 			AddToBuffer(USER_CMD_ENTER);
 			anim::StartAnimation(anim::GetCharacter(2), anim::PLAYER_SHOUT); // 세 번째 캐릭터 샤우트 애니메이션
+			score::JudgeStartTime(anim::GetCharacter(2), note::GetNotes(anim::GetCharacter(2)));
 		}
 		else
 		{

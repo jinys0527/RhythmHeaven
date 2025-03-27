@@ -1,6 +1,11 @@
 #pragma once
-#include "Note.h"
+#include <Windows.h>
 #define MAX_CHARACTER_SIZE 256
+
+namespace note
+{
+    struct Note;
+}
 
 namespace anim
 {
@@ -19,6 +24,13 @@ namespace anim
         TOGGLE_CHANT        // case 11: toggle silence <-> default
     };
 
+    enum CharacterType {
+        PLAYER,
+        CHORUS1,
+        CHORUS2,
+        CONDUCTOR
+    };
+
     struct Character {
         int x, y;                     // 위치
         const char* currentFrame;     // 현재 프레임
@@ -27,11 +39,12 @@ namespace anim
         bool isAnimating;             // 애니메이션 중인지 여부
         ULONGLONG lastAnimTick;       // 각 캐릭터별 애니메이션 타이머 추가
         ULONGLONG lastPlayPos;        // 노트 시작 시간
+        CharacterType characterType;  // 캐릭터 타입
     };
 
     void InitCharacter(Character* character, int x, int y, 
                     const char* currentFrame, AnimState currentState, 
-                    int frameIndex, bool isAnimating); //초기화 함수
+                    int frameIndex, bool isAnimating, CharacterType charactertype); //초기화 함수
 
     void StartGame();
     void DrawScreen();
@@ -42,10 +55,11 @@ namespace anim
     void StartAnimation(Character*& character, AnimState state);
     bool IsShoutAnimating();
 
-    void AssignState(Character*& character, note::Note*& note, int index);
+    void AssignState(Character*& character, note::Note*& note);
 
     Character*& GetCharacter(int num);
 
     void UpdateAIAnimation(Character*& character, note::Note*& note, int noteSize);
-    bool AIAnimEnd(Character*& character, long long startTime, double duration);
+    bool AIAnimEnd(Character*& character, double duration);
+    void Shame();
 }

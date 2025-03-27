@@ -4,6 +4,7 @@
 #include "Anim.h"
 #include "FmodEffect.h"
 #include "Fmod.h"
+#include "Note.h"
 using namespace std;
 
 namespace anim
@@ -36,7 +37,7 @@ namespace anim
 		"Character/Chorus_boys_silence.txt"
 	};
 
-	const char* fastChantFrames[] =	{
+	const char* fastChantFrames[] = {
 		"Character/Chorus_boys_silence.txt",
 		"Character/Chorus_boys_sp2.txt",
 		"Character/Chorus_boys_default.txt"
@@ -111,7 +112,7 @@ namespace anim
 	const int playerShoutFrameCount = sizeof(playerShoutFrames) / sizeof(playerShoutFrames[0]);
 	const int shameFrameCount = sizeof(shameFrames) / sizeof(shameFrames[0]);
 
-	void InitCharacter(Character* character, int x, int y, const char* currentFrame, AnimState currentState, int frameIndex, bool isAnimating)
+	void InitCharacter(Character* character, int x, int y, const char* currentFrame, AnimState currentState, int frameIndex, bool isAnimating, CharacterType characterType)
 	{
 		character->x = x;
 		character->y = y;
@@ -119,6 +120,7 @@ namespace anim
 		character->currentState = currentState;
 		character->frameIndex = frameIndex;
 		character->isAnimating = isAnimating;
+		character->characterType = characterType;
 	}
 
 	void StartGame()
@@ -126,13 +128,13 @@ namespace anim
 		render::InitScreen();
 
 		//코러스 1
-		InitCharacter(&characters[0], 70, 1, "Character/Chorus_boys_silence.txt", NONE, 0, false);
+		InitCharacter(&characters[0], 70, 1, "Character/Chorus_boys_silence.txt", NONE, 0, false, CHORUS1);
 		//코러스 2
-		InitCharacter(&characters[1], 120, 6, "Character/Chorus_boys_silence.txt", NONE, 0, false);
+		InitCharacter(&characters[1], 120, 6, "Character/Chorus_boys_silence.txt", NONE, 0, false, CHORUS2);
 		//플레이어
-		InitCharacter(&characters[2], 170, 11, "Character/Chorus_boys_default.txt", NONE, 0, false);
+		InitCharacter(&characters[2], 170, 11, "Character/Chorus_boys_default.txt", NONE, 0, false, PLAYER);
 		//지휘자
-		InitCharacter(&characters[3], 10, 40, "Character/Conductor.txt", NONE, 0, false);
+		InitCharacter(&characters[3], 10, 40, "Character/Conductor.txt", NONE, 0, false, CONDUCTOR);
 		chorus1 = &characters[0];
 		chorus2 = &characters[1];
 		player = &characters[2];
@@ -163,13 +165,13 @@ namespace anim
 			render::ScreenDraw(x, y++, Word);
 		}
 		fclose(fp);
-		delete[] Word; 
+		delete[] Word;
 	}
 
 	void UpdateAnimation()
 	{
-		UpdateAIAnimation(GetCharacter(0), note::GetNotes(1), 22);
-		UpdateAIAnimation(GetCharacter(1), note::GetNotes(2), 22);
+		UpdateAIAnimation(GetCharacter(0), note::GetNotes(GetCharacter(0)), 18);
+		UpdateAIAnimation(GetCharacter(1), note::GetNotes(GetCharacter(1)), 18);
 		UpdateAnimation(GetCharacter(0));
 		UpdateAnimation(GetCharacter(1));
 		UpdateAnimation(GetCharacter(2));
@@ -204,7 +206,7 @@ namespace anim
 			}
 			else
 			{
- 				ResetState(character, false, NONE);
+				ResetState(character, false, NONE);
 			}
 			break;
 
@@ -245,7 +247,7 @@ namespace anim
 			if (character->frameIndex < shoutFrameCount)
 			{
 				isShoutAnimating = true;
-                character->currentFrame = shoutFrames[character->frameIndex];
+				character->currentFrame = shoutFrames[character->frameIndex];
 			}
 			else
 			{
@@ -326,18 +328,17 @@ namespace anim
 		return isShoutAnimating;
 	}
 
-	void AssignState(Character*& character, note::Note*& note, int index)
+	void AssignState(Character*& character, note::Note*& note)
 	{
-		if (index >= 0 && index < 22) {
-			switch (note[index].curNoteType)
-			{
-			case note::noteType::Chorus:
-				character->currentState = CHANT;
-				break;
-			case note::noteType::Shout:
-				character->currentState = SHOUT;
-				break;
-			}
+		int& index = note::GetIndex(character);
+		switch (note[index].curNoteType)
+		{
+		case note::noteType::Chorus:
+			character->currentState = CHANT;
+			break;
+		case note::noteType::Shout:
+			character->currentState = SHOUT;
+			break;
 		}
 	}
 
@@ -356,55 +357,53 @@ namespace anim
 
 	void UpdateAIAnimation(Character*& character, note::Note*& note, int noteSize)
 	{
-		unsigned int playPos = sound::GetPlayPosition();
+		unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
 		LARGE_INTEGER end;
 		QueryPerformanceCounter(&end);
 		character->lastPlayPos = end.QuadPart;
-		const int tolerance = 20; //30ms 오차 범위
+		const int tolerance = 20; //오차 범위
 
-		for (int i = 0; i < noteSize; i++)
+		int& index = note::GetIndex(character);
+
+		if ((note[index].startTime - tolerance) <= playPos && playPos <= (note[index].endTime + tolerance))
 		{
-			if (i >= 0 && i < 22)	
+			AssignState(character, note);
+			if (note[index].duration < 200)
 			{
-				if ((note[i].startTime - tolerance) <= playPos && playPos <= (note[i].endTime + tolerance))
+				if (character->currentState == CHANT)
 				{
-					AssignState(character, note, i);
-					if (note[i].duration < 200)
-					{
-						if (character->currentState == CHANT)
-						{
-							character->currentState = FAST_CHANT;
-						}
-						else if (character->currentState == SHOUT)
-						{
-							character->currentState = FAST_SHOUT;
-						}
-						bool animEnd = AIAnimEnd(character, note[i].startTime, note[i].duration);
-						while (!animEnd)
-						{
-							animEnd = AIAnimEnd(character, note[i].startTime, note[i].duration);
-						}
-						break;
-					}
-					else if (note[i].duration >= 200)
-					{
-						bool animEnd = AIAnimEnd(character, note[i].startTime, note[i].duration);
-						while (!animEnd)
-						{
-							animEnd = AIAnimEnd(character, note[i].startTime, note[i].duration);
-						}
-						break;
-					}
+					character->currentState = FAST_CHANT;
+				}
+				else if (character->currentState == SHOUT)
+				{
+					character->currentState = FAST_SHOUT;
+				}
+				bool animEnd = AIAnimEnd(character, note[index].duration);
+				while (!animEnd)
+				{
+					animEnd = AIAnimEnd(character, note[index].duration);
+				}
+			}
+			else if (note[index].duration >= 200)
+			{
+				bool animEnd = AIAnimEnd(character, note[index].duration);
+				while (!animEnd)
+				{
+					animEnd = AIAnimEnd(character, note[index].duration);
 				}
 			}
 		}
+		else if(playPos > (note[index].endTime + tolerance) && playPos <= (note[index+1].startTime + tolerance))
+		{
+			index++;
+		}
 	}
 
-	bool AIAnimEnd(Character*& character, long long start, double duration)
+	bool AIAnimEnd(Character*& character, double duration)
 	{
-		LARGE_INTEGER frequency, end; 
+		LARGE_INTEGER frequency, end;
 		QueryPerformanceCounter(&end);
-		
+
 		int animTime = 0;
 		switch (character->currentState)
 		{
@@ -435,7 +434,7 @@ namespace anim
 
 		long long dduration = (end.QuadPart - character->lastPlayPos);
 
-		if (dduration >= lastAnimStartTime * 350)   
+		if (dduration >= lastAnimStartTime * 350)
 		{
 			switch (character->currentState)
 			{
@@ -453,5 +452,14 @@ namespace anim
 		}
 
 		return false;
+	}
+
+	void Shame()
+	{
+		StartAnimation(GetCharacter(0), AnimState::SHAME);
+		StartAnimation(GetCharacter(1), AnimState::SHAME);
+		render::ScreenClear();
+		anim::DrawScreen();
+		render::ScreenFlipping();
 	}
 }

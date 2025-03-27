@@ -5,6 +5,7 @@
 #include "InputSystem.h"
 #include "Fmod.h"
 #include "FmodEffect.h"
+#include "Note.h"
 
 // 애니메이션 상태를 관리하는 기본 값
 int currentAnimationState = 0;
@@ -56,13 +57,13 @@ int main()
 
     sound::SoundSetUp();
     effectsound::EffectSoundSetUp();
-    sound::Playsound(0);
+    sound::Playsound(2, sound::GetChannel(2));
 
     QueryPerformanceCounter(&start);
 
     effectsound::EffectPlaySound(0, effectsound::GetChannel(0));
     note::InitNote();
-
+    anim::Shame();
     Render();
     bool isPlaying;
 
@@ -89,7 +90,7 @@ int main()
             start.QuadPart = end.QuadPart;
         }
 
-        sound::GetChannel(0)->isPlaying(&isPlaying);
+        sound::GetChannel(2)->isPlaying(&isPlaying);
         if (!isPlaying)
         {
             isRun = false;

@@ -140,6 +140,7 @@
     <ClCompile Include="Note.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Anim.cpp" />
+    <ClCompile Include="ScoreSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Anim.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="Note.h" />
     <ClInclude Include="RenderSystem.h" />
+    <ClInclude Include="ScoreSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

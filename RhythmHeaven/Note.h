@@ -1,5 +1,10 @@
 #pragma once
 
+namespace anim
+{
+	struct Character;
+}
+
 namespace note
 {
 	enum noteType
@@ -18,7 +23,8 @@ namespace note
 		long long duration;  //ms¥‹¿ß
 	};
 
+	int& GetIndex(anim::Character*& character);
 	void InitNote();
 	void CalcDuration(Note*& note, int size);
-	Note*& GetNotes(int num);
+	Note*& GetNotes(anim::Character*& character);
 }

@@ -7,11 +7,10 @@ using namespace FMOD;
 namespace sound
 {
 	void SoundSetUp();
-	void Playsound(int soundNum);
-	void Pausesound();
+	void Playsound(int soundNum, Channel*& gChannel);
+	void Stopsound(Channel*& gChannel);
 	void Releasesound();
 	Channel*& GetChannel(int num);
 
-	unsigned int GetPlayPosition();
-	unsigned int GetLength(int num);
+	unsigned int GetPlayPosition(Channel*& gChannel);
 }

@@ -4,36 +4,49 @@ namespace sound
 {
 	enum Sounds
 	{
-		SD_GleeClub = 0,
+		SD_TitleMusic = 0,
+		SD_TutorialMusic,
+		SD_GleeClub,
+		SD_EndingMusic_Bad,
+		SD_EndingMusic_Normal,
+		SD_EndingMusic_True,
+		SD_RankingMusic,
 		SD_Size
 	};
 
 	System* gSystem;
 	Sound* gSound[SD_Size];
-	Channel* gChannel;
+	Channel* gChannel0;		//TitleMusic		Loop
+	Channel* gChannel1;		//TutorialMusic		
+	Channel* gChannel2;		//GleeClub
+	Channel* gChannel3;		//EndingMusic_Bad
+	Channel* gChannel4;		//EndingMusic_Normal
+	Channel* gChannel5;		//EndingMusic_True
+	Channel* gChannel6;		//RankingMusic		Loop
 	FMOD_RESULT result;
 
 	void SoundSetUp()
 	{
 		result = System_Create(&gSystem);
-		result = gSystem->init(1, FMOD_INIT_NORMAL, 0);
+		result = gSystem->init(5, FMOD_INIT_NORMAL, 0);
 
-		char str[128];
-		for (int i = 0; i < SD_Size; i++)
-		{
-			sprintf_s(str, "Media/GleeClub.mp3");
-			gSystem->createSound(str, FMOD_LOOP_OFF, 0, &gSound[i]);
-		}
+		gSystem->createSound("Media/TitleSound.mp3", FMOD_LOOP_NORMAL, 0, &gSound[0]);
+		gSystem->createSound("Media/TutorialSound.mp3", FMOD_LOOP_OFF, 0, &gSound[1]);
+		gSystem->createSound("Media/GleeClub.mp3", FMOD_LOOP_OFF, 0, &gSound[2]);
+		gSystem->createSound("Media/EndingCreditSound(bad).mp3", FMOD_LOOP_OFF, 0, &gSound[3]);
+		gSystem->createSound("Media/EndingCreditSound(normal).mp3", FMOD_LOOP_OFF, 0, &gSound[4]);
+		gSystem->createSound("Media/GleeClub.mp3", FMOD_LOOP_OFF, 0, &gSound[5]);
+		gSystem->createSound("Media/GleeClub.mp3", FMOD_LOOP_NORMAL, 0, &gSound[6]);
 	}
 
-	void Playsound(int soundNum)
+	void Playsound(int soundNum, Channel*& gChannel)
 	{
 		gSystem->playSound(gSound[soundNum], 0, false, &gChannel);
 	}
 
-	void Pausesound()
+	void Stopsound(Channel*& gChannel)
 	{
-		gChannel->setPaused(true);
+		gChannel->stop();
 	}
 
 	void Releasesound()
@@ -46,21 +59,26 @@ namespace sound
 		switch (num)
 		{
 		case 0:
-			return gChannel;
+			return gChannel0;
+		case 1:
+			return gChannel1;
+		case 2:
+			return gChannel2;
+		case 3:
+			return gChannel3;
+		case 4:
+			return gChannel4;
+		case 5:
+			return gChannel5;
+		case 6:
+			return gChannel6;
 		}
 	}
 
-	unsigned int GetPlayPosition()
+	unsigned int GetPlayPosition(Channel*& gChannel)
 	{
 		unsigned int playPosition = 0;
 		gChannel->getPosition(&playPosition, FMOD_TIMEUNIT_MS);
 		return playPosition;
-	}
-
-	unsigned int GetLength(int num)
-	{
-		unsigned int length;
-		gSound[num]->getLength(&length, FMOD_TIMEUNIT_MS);
-		return length;
 	}
 }
