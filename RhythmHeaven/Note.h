@@ -12,10 +12,10 @@ namespace note
 
 	struct Note
 	{
-		unsigned long long startTime; //ms단위
-		unsigned long long endTime;   //ms단위
+		long long startTime; //ms단위
+		long long endTime;   //ms단위
 		noteType curNoteType;
-		unsigned long long duration;  //ms단위
+		long long duration;  //ms단위
 	};
 
 	void InitNote();

@@ -12,10 +12,11 @@ namespace anim
         FAST_MUTE_CHANT,    // case 4: default -> sp2 -> silence
         SHOUT,              // case 5: silence -> enter3 -> enter2 -> enter1 -> enter0
         MUTE_SHOUT,         // case 6: enter0 -> enter1 -> enter2 -> enter3 -> silence
-        FAST_SHOUT,         // case 7: silence -> enter2 -> enter0
-        FAST_MUTE_SHOUT,    // case 8: enter0 -> enter2 -> silence
-        SHAME,              // case 9: any -> shame
-        TOGGLE_CHANT        // case 10: toggle silence <-> default
+        PLAYER_SHOUT,       // case 7: silence -> enter3 -> enter2 -> enter1 -> enter0 -> enter0 -> enter1 -> enter2 -> enter3 -> silence
+        FAST_SHOUT,         // case 8: silence -> enter2 -> enter0
+        FAST_MUTE_SHOUT,    // case 9: enter0 -> enter2 -> silence
+        SHAME,              // case 10: any -> shame
+        TOGGLE_CHANT        // case 11: toggle silence <-> default
     };
 
     struct Character {
@@ -25,6 +26,7 @@ namespace anim
         int frameIndex;               // 현재 프레임 인덱스
         bool isAnimating;             // 애니메이션 중인지 여부
         ULONGLONG lastAnimTick;       // 각 캐릭터별 애니메이션 타이머 추가
+        ULONGLONG lastPlayPos;        // 노트 시작 시간
     };
 
     void InitCharacter(Character* character, int x, int y, 
@@ -45,5 +47,5 @@ namespace anim
     Character*& GetCharacter(int num);
 
     void UpdateAIAnimation(Character*& character, note::Note*& note, int noteSize);
-    bool AIAnimEnd(Character*& character, ULONGLONG startTime, ULONGLONG duration);
+    bool AIAnimEnd(Character*& character, long long startTime, double duration);
 }

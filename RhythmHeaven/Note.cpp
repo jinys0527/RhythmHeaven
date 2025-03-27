@@ -2,32 +2,32 @@
 #include <iostream>
 namespace note
 {
-	Note notes_Player[22] = { {12070, 13110, noteType::Chorus_Do, 0}, {19270, 20130, noteType::Chorus_Do, 0}, {20210, 21120, noteType::Chorus_Do, 0},
-								{27040, 27160, noteType::Chorus_Fa, 0}, {27180, 27220, noteType::Chorus_Fa, 0}, {27240, 27280, noteType::Chorus_Fa, 0},
-								{28000, 28080, noteType::Chorus_Fa, 0}, {33110, 34210, noteType::Chorus_Do, 0}, {35180, 36100, noteType::Shout, 0},
-								{43030, 45000, noteType::Chorus_Fa, 0}, {45270, 46190, noteType::Shout, 0}, {58210, 60200, noteType::Chorus_Do, 0},
-								{66080, 68050, noteType::Chorus_Fa, 0}, {69090, 70010, noteType::Shout, 0}, {75060, 75100, noteType::Chorus_Do, 0},
-								{75140, 75260, noteType::Chorus_Do, 0}, {76020, 76140, noteType::Chorus_Do, 0}, {80250, 80290, noteType::Chorus_Fa, 0},
-								{81030, 81150, noteType::Chorus_Fa, 0}, {81210, 82030, noteType::Chorus_Fa, 0}, {87060, 88060, noteType::Chorus_Do, 0},
-								{89050, 89270, noteType::Shout, 0} };
+	Note notes_Player[22] = { {12245, 13380, noteType::Chorus_Do, 0}, {19919, 20453, noteType::Chorus_Do, 0}, {20720, 21421, noteType::Chorus_Do, 0},
+								{27160, 27560, noteType::Chorus_Fa, 0}, {27627, 27761, noteType::Chorus_Fa, 0}, {27827, 27961, noteType::Chorus_Fa, 0},
+								{28028, 28294, noteType::Chorus_Fa, 0}, {33400, 34734, noteType::Chorus_Do, 0}, {35635, 36369, noteType::Shout, 0},
+								{43143, 45045, noteType::Chorus_Fa, 0}, {45945, 46679, noteType::Shout, 0}, {58758, 60660, noteType::Chorus_Do, 0},
+								{66266, 68168, noteType::Chorus_Fa, 0}, {69302, 70036, noteType::Shout, 0}, {75208, 75341, noteType::Chorus_Do, 0},
+								{75475, 75875, noteType::Chorus_Do, 0}, {76076, 76476, noteType::Chorus_Do, 0}, {80847, 80980, noteType::Chorus_Fa, 0},
+								{81114, 81514, noteType::Chorus_Fa, 0}, {81714, 82115, noteType::Chorus_Fa, 0}, {87220, 88221, noteType::Chorus_Do, 0},
+								{89189, 89923, noteType::Shout, 0} };
 
-	Note notes_Chorus1[22] = { {8150, 9190, noteType::Chorus, 0}, {16030, 16190, noteType::Chorus, 0}, {16270, 17180, noteType::Chorus, 0},
-							{23240, 24060, noteType::Chorus, 0}, {24080, 24120, noteType::Chorus, 0}, {24140, 24180, noteType::Chorus, 0},
-							{24200, 24280, noteType::Chorus, 0}, {31170, 34210, noteType::Chorus, 0}, {35180, 36100, noteType::Shout, 0},
-							{39090, 41060, noteType::Chorus, 0}, {45270, 46190, noteType::Shout, 0}, {54270, 56240, noteType::Chorus, 0},
-							{62140, 64110, noteType::Chorus, 0}, {69090, 70010, noteType::Shout, 0}, {72120, 72160, noteType::Chorus, 0},
-							{72200, 73020, noteType::Chorus, 0}, {73080, 73200, noteType::Chorus, 0}, {78010, 78050, noteType::Chorus, 0},
-							{78090, 78210, noteType::Chorus, 0}, {78270, 79090, noteType::Chorus, 0}, {85260, 88060, noteType::Chorus, 0},
-							{89050, 89270, noteType::Shout, 0} };
+	Note notes_Chorus1[22] = { {8508, 9642, noteType::Chorus, 0}, {16116, 16649, noteType::Chorus, 0}, {16916, 17617, noteType::Chorus, 0},
+							{23823, 24224, noteType::Chorus, 0}, {24290, 24424, noteType::Chorus, 0}, {24491, 24624, noteType::Chorus, 0},
+							{24691, 24958, noteType::Chorus, 0}, {31598, 34734, noteType::Chorus, 0}, {35635, 36369, noteType::Shout, 0},
+							{39339, 41241, noteType::Chorus, 0}, {45945, 46679, noteType::Shout, 0}, {54954, 56856, noteType::Chorus, 0},
+							{62462, 64364, noteType::Chorus, 0}, {69302, 70036, noteType::Shout, 0}, {72405, 72539, noteType::Chorus, 0},
+							{72672, 73073, noteType::Chorus, 0}, {73273, 73673, noteType::Chorus, 0}, {78044, 78178, noteType::Chorus, 0},
+							{78311, 78711, noteType::Chorus, 0}, {78912, 79312, noteType::Chorus, 0}, {85885, 88221, noteType::Chorus, 0},
+							{89189, 89923, noteType::Shout, 0} };
 
-	Note notes_Chorus2[22] = { {10110, 11150, noteType::Chorus, 0}, {18000, 18160, noteType::Chorus, 0}, {18240, 19150, noteType::Chorus, 0},
-							{25140, 25260, noteType::Chorus, 0}, {25280, 26020, noteType::Chorus, 0}, {26040, 26080, noteType::Chorus, 0},
-							{26100, 26180, noteType::Chorus, 0}, {32140, 34210, noteType::Chorus, 0}, {35180, 36100, noteType::Shout, 0},
-							{41060, 43030, noteType::Chorus, 0}, {45270, 46190, noteType::Shout, 0}, {56240, 58210, noteType::Chorus, 0},
-							{64110, 66080, noteType::Chorus, 0}, {69090, 70010, noteType::Shout, 0}, {73240, 73280, noteType::Chorus, 0},
-							{74020, 74140, noteType::Chorus, 0}, {74020, 75020, noteType::Chorus, 0}, {79130, 79170, noteType::Chorus, 0},
-							{79210, 80030, noteType::Chorus, 0}, {80090, 80210, noteType::Chorus, 0}, {86160, 88060, noteType::Chorus, 0},
-							{89050, 89270, noteType::Shout, 0} };
+	Note notes_Chorus2[22] = { {10377, 11511, noteType::Chorus, 0}, {18018, 18551, noteType::Chorus, 0}, {18818, 19519, noteType::Chorus, 0},
+							{25492, 25892, noteType::Chorus, 0}, {25959, 26092, noteType::Chorus, 0}, {26159, 26292, noteType::Chorus, 0},
+							{26359, 26626, noteType::Chorus, 0}, {32499, 34734, noteType::Chorus, 0}, {35635, 36369, noteType::Shout, 0},
+							{41241, 43143, noteType::Chorus, 0}, {45945, 46679, noteType::Shout, 0}, {56856, 58758, noteType::Chorus, 0},
+							{64364, 66266, noteType::Chorus, 0}, {69302, 70036, noteType::Shout, 0}, {73807, 73940, noteType::Chorus, 0},
+							{74074, 74474, noteType::Chorus, 0}, {74674, 75075, noteType::Chorus, 0}, {79446, 79579, noteType::Chorus, 0},
+							{79712, 80113, noteType::Chorus, 0}, {80313, 80713, noteType::Chorus, 0}, {86553, 88221, noteType::Chorus, 0},
+							{89189, 89923, noteType::Shout, 0} };
 
 	Note* Note_Player = notes_Player;
 	Note* Note_Chorus1 = notes_Chorus1;

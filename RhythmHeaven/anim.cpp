@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 #include "RenderSystem.h"
 #include "Anim.h"
 #include "FmodEffect.h"
@@ -52,10 +53,29 @@ namespace anim
 		"Character/Chorus_boys_enter3.txt",
 		"Character/Chorus_boys_enter2.txt",
 		"Character/Chorus_boys_enter1.txt",
-		"Character/Chorus_boys_enter0.txt"
+		"Character/Chorus_boys_enter0.txt",
+		"Character/Chorus_boys_enter1.txt",
+		"Character/Chorus_boys_enter2.txt",
+		"Character/Chorus_boys_enter3.txt",
+		"Character/Chorus_boys_silence.txt"
 	};
 
 	const char* muteShoutFrames[] = {
+		"Character/Chorus_boys_enter0.txt",
+		"Character/Chorus_boys_enter1.txt",
+		"Character/Chorus_boys_enter2.txt",
+		"Character/Chorus_boys_enter3.txt",
+		"Character/Chorus_boys_silence.txt"
+	};
+
+	const char* playerShoutFrames[] = {
+		"Character/Chorus_boys_silence.txt",
+		"Character/Chorus_boys_enter3.txt",
+		"Character/Chorus_boys_enter2.txt",
+		"Character/Chorus_boys_enter1.txt",
+		"Character/Chorus_boys_enter1.txt",
+		"Character/Chorus_boys_enter0.txt",
+		"Character/Chorus_boys_enter0.txt",
 		"Character/Chorus_boys_enter0.txt",
 		"Character/Chorus_boys_enter1.txt",
 		"Character/Chorus_boys_enter2.txt",
@@ -88,6 +108,7 @@ namespace anim
 	const int muteShoutFrameCount = sizeof(muteShoutFrames) / sizeof(muteShoutFrames[0]);
 	const int fastShoutFrameCount = sizeof(fastShoutFrames) / sizeof(fastShoutFrames[0]);
 	const int fastMuteShoutFrameCount = sizeof(fastMuteShoutFrames) / sizeof(fastMuteShoutFrames[0]);
+	const int playerShoutFrameCount = sizeof(playerShoutFrames) / sizeof(playerShoutFrames[0]);
 	const int shameFrameCount = sizeof(shameFrames) / sizeof(shameFrames[0]);
 
 	void InitCharacter(Character* character, int x, int y, const char* currentFrame, AnimState currentState, int frameIndex, bool isAnimating)
@@ -142,7 +163,7 @@ namespace anim
 			render::ScreenDraw(x, y++, Word);
 		}
 		fclose(fp);
-		delete[] Word; // 메모리 누수 방지를 위해 delete[]로 수정
+		delete[] Word; 
 	}
 
 	void UpdateAnimation()
@@ -156,15 +177,21 @@ namespace anim
 
 	void UpdateAnimation(Character*& character)
 	{
-		ULONGLONG nowTick = GetTickCount64();
+		LARGE_INTEGER end1;
 
-		if (nowTick - character->lastAnimTick < 33)
+		if (character->currentState == AnimState::PLAYER_SHOUT && character->frameIndex == 0)
+		{
+			effectsound::EffectPlaySound(1, effectsound::GetChannel(1));
+		}
+
+		QueryPerformanceCounter(&end1);
+
+		if (end1.QuadPart - character->lastAnimTick < 140000)
 		{
 			return;
 		}
 
 		character->isAnimating = true;
-		character->lastAnimTick = nowTick;
 		character->frameIndex++;
 
 		// 애니메이션 상태에 따라 프레임 업데이트
@@ -192,12 +219,45 @@ namespace anim
 			}
 			break;
 
+		case FAST_CHANT:
+			if (character->frameIndex < fastChantFrameCount)
+			{
+				character->currentFrame = fastChantFrames[character->frameIndex];
+			}
+			else
+			{
+				ResetState(character, false, NONE);
+			}
+			break;
+
+		case FAST_MUTE_CHANT:
+			if (character->frameIndex < fastMuteChantFrameCount)
+			{
+				character->currentFrame = fastMuteChantFrames[character->frameIndex];
+			}
+			else
+			{
+				ResetState(character, false, NONE);
+			}
+			break;
+
 		case SHOUT:
 			if (character->frameIndex < shoutFrameCount)
 			{
 				isShoutAnimating = true;
-				//effectsound::EffectPlaySound(2, effectsound::GetChannel(5));
-				character->currentFrame = shoutFrames[character->frameIndex];
+                character->currentFrame = shoutFrames[character->frameIndex];
+			}
+			else
+			{
+				ResetState(character, false, NONE);
+			}
+			break;
+
+		case PLAYER_SHOUT:
+			if (character->frameIndex < playerShoutFrameCount)
+			{
+				isShoutAnimating = true;
+				character->currentFrame = playerShoutFrames[character->frameIndex];
 			}
 			else
 			{
@@ -221,7 +281,8 @@ namespace anim
 			character->frameIndex--;
 			break;
 		}
-
+		QueryPerformanceCounter(&end1);
+		character->lastAnimTick = end1.QuadPart;
 	}
 
 	void ResetState(Character*& character, bool isAnimating, AnimState currentState)
@@ -296,16 +357,16 @@ namespace anim
 	void UpdateAIAnimation(Character*& character, note::Note*& note, int noteSize)
 	{
 		unsigned int playPos = sound::GetPlayPosition();
-		const int tolerance = 30; //30ms 오차 범위
-
-		if (character->isAnimating)
-			return;
+		LARGE_INTEGER end;
+		QueryPerformanceCounter(&end);
+		character->lastPlayPos = end.QuadPart;
+		const int tolerance = 20; //30ms 오차 범위
 
 		for (int i = 0; i < noteSize; i++)
 		{
-			if (i >= 0 && i < 22)
+			if (i >= 0 && i < 22)	
 			{
-				if ((note[i].startTime - tolerance) <= playPos && playPos <= (note[i].startTime + tolerance))
+				if ((note[i].startTime - tolerance) <= playPos && playPos <= (note[i].endTime + tolerance))
 				{
 					AssignState(character, note, i);
 					if (note[i].duration < 200)
@@ -323,6 +384,7 @@ namespace anim
 						{
 							animEnd = AIAnimEnd(character, note[i].startTime, note[i].duration);
 						}
+						break;
 					}
 					else if (note[i].duration >= 200)
 					{
@@ -331,20 +393,17 @@ namespace anim
 						{
 							animEnd = AIAnimEnd(character, note[i].startTime, note[i].duration);
 						}
+						break;
 					}
 				}
-			}
-			
-			else
-			{
-				return;
 			}
 		}
 	}
 
-	bool AIAnimEnd(Character*& character, ULONGLONG startTime, ULONGLONG duration)
+	bool AIAnimEnd(Character*& character, long long start, double duration)
 	{
-		ULONGLONG currentTime = GetTickCount64();
+		LARGE_INTEGER frequency, end; 
+		QueryPerformanceCounter(&end);
 		
 		int animTime = 0;
 		switch (character->currentState)
@@ -371,9 +430,12 @@ namespace anim
 			break;
 		}
 
-		ULONGLONG lastAnimStartTime = duration - animTime;
+		long long lastAnimStartTime = duration - animTime;
 
-		if (currentTime - startTime >= lastAnimStartTime)
+
+		long long dduration = (end.QuadPart - character->lastPlayPos);
+
+		if (dduration >= lastAnimStartTime * 350)   
 		{
 			switch (character->currentState)
 			{
@@ -382,12 +444,6 @@ namespace anim
 				break;
 			case FAST_CHANT:
 				StartAnimation(character, FAST_MUTE_CHANT);
-				break;
-			case SHOUT:
-				StartAnimation(character, MUTE_SHOUT);
-				break;
-			case FAST_SHOUT:
-				StartAnimation(character, FAST_MUTE_SHOUT);
 				break;
 			case TOGGLE_CHANT:
 				DrawCharacter(character->x, character->y, "Character / Chorus_boys_silence.txt");

@@ -29,7 +29,6 @@ namespace sound
 	void Playsound(int soundNum)
 	{
 		gSystem->playSound(gSound[soundNum], 0, false, &gChannel);
-		gChannel->setVolume(0.5f);
 	}
 
 	void Pausesound()
@@ -40,6 +39,15 @@ namespace sound
 	void Releasesound()
 	{
 		gSystem->release();
+	}
+
+	Channel*& GetChannel(int num)
+	{
+		switch (num)
+		{
+		case 0:
+			return gChannel;
+		}
 	}
 
 	unsigned int GetPlayPosition()

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Windows.h>
+#include <windows.h>
 #include "Anim.h"
 #include "RenderSystem.h"
 #include "InputSystem.h"
@@ -8,6 +8,7 @@
 
 // 애니메이션 상태를 관리하는 기본 값
 int currentAnimationState = 0;
+bool isRun = true;
 
 void Render()
 {
@@ -36,37 +37,65 @@ void Update()
     effectsound::Update();
 }
 
-int main()
+bool IsGameRun()
 {
-    anim::StartGame();
+    return isRun;
+}
 
-    ULONGLONG nowTick = GetTickCount64();
-    ULONGLONG prevTick = nowTick;
+void EndGame()
+{
+    sound::Releasesound();
+    effectsound::ReleaseEffectSound();
+}
+
+int main()
+{   
+    LARGE_INTEGER start, end; // QPC
+
+    anim::StartGame();
 
     sound::SoundSetUp();
     effectsound::EffectSoundSetUp();
     sound::Playsound(0);
-    effectsound::EffectPlaySound(1, effectsound::GetChannel(3));
+
+    QueryPerformanceCounter(&start);
+
+    effectsound::EffectPlaySound(0, effectsound::GetChannel(0));
     note::InitNote();
 
     Render();
+    bool isPlaying;
 
-    while (1) //IsGameRun())
+    while (IsGameRun()) //IsGameRun())
     {
         ProcessInput(); // 입력 처리 활성화
+
+        if (!anim::IsShoutAnimating() && input::HasPendingInput())
+        {
+            int currentInput = input::GetNextInput();
+            int nextInput = input::GetNextInput();
+            // 버퍼에 저장된 입력에 따라 액션 실행
+            input::HandleBufferedInput(currentInput, nextInput);
+        }
+
         Update();
-        nowTick = GetTickCount64();
+        QueryPerformanceCounter(&end);
 
         anim::UpdateAnimation(); //애니메이션 업데이트
 
-        //화면 렌더링 (33ms 마다 - 약 30fps)
-        if (nowTick - prevTick >= 33)
+        if (end.QuadPart - start.QuadPart >= 40)
         {
             Render();
-            prevTick = nowTick;
+            start.QuadPart = end.QuadPart;
+        }
+
+        sound::GetChannel(0)->isPlaying(&isPlaying);
+        if (!isPlaying)
+        {
+            isRun = false;
         }
     }
 
-    //EndGame();
+    EndGame();
     return 0;
 }
