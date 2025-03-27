@@ -27,4 +27,6 @@ namespace input
 	bool IsEnterCmdOn();
 
 	void UpdateInput();
+
+	void keyControl(bool& mButton);
 }

@@ -19,24 +19,24 @@ namespace sound
 	Channel* gChannel0;		//TitleMusic		Loop
 	Channel* gChannel1;		//TutorialMusic		
 	Channel* gChannel2;		//GleeClub
-	Channel* gChannel3;		//EndingMusic_Bad
-	Channel* gChannel4;		//EndingMusic_Normal
-	Channel* gChannel5;		//EndingMusic_True
+	Channel* gChannel3;		//BadEndingSound
+	Channel* gChannel4;		//NormalEndingSound
+	Channel* gChannel5;		//TrueEndingSound
 	Channel* gChannel6;		//RankingMusic		Loop
 	FMOD_RESULT result;
 
 	void SoundSetUp()
 	{
 		result = System_Create(&gSystem);
-		result = gSystem->init(5, FMOD_INIT_NORMAL, 0);
+		result = gSystem->init(7, FMOD_INIT_NORMAL, 0);
 
 		gSystem->createSound("Media/TitleSound.mp3", FMOD_LOOP_NORMAL, 0, &gSound[0]);
 		gSystem->createSound("Media/TutorialSound.mp3", FMOD_LOOP_OFF, 0, &gSound[1]);
 		gSystem->createSound("Media/GleeClub.mp3", FMOD_LOOP_OFF, 0, &gSound[2]);
-		gSystem->createSound("Media/EndingCreditSound(bad).mp3", FMOD_LOOP_OFF, 0, &gSound[3]);
-		gSystem->createSound("Media/EndingCreditSound(normal).mp3", FMOD_LOOP_OFF, 0, &gSound[4]);
-		gSystem->createSound("Media/GleeClub.mp3", FMOD_LOOP_OFF, 0, &gSound[5]);
-		gSystem->createSound("Media/GleeClub.mp3", FMOD_LOOP_NORMAL, 0, &gSound[6]);
+		gSystem->createSound("Media/BadEndingSound.mp3", FMOD_LOOP_OFF, 0, &gSound[3]);
+		gSystem->createSound("Media/NormalEndingSound.mp3", FMOD_LOOP_OFF, 0, &gSound[4]);
+		gSystem->createSound("Media/TrueEndingSound.mp3", FMOD_LOOP_OFF, 0, &gSound[5]);
+		gSystem->createSound("Media/RankingMusic.wav", FMOD_LOOP_NORMAL, 0, &gSound[6]);
 	}
 
 	void Playsound(int soundNum, Channel*& gChannel)

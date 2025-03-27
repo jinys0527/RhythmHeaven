@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="Fmod.cpp" />
     <ClCompile Include="FmodEffect.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Note.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Anim.h" />
     <ClInclude Include="Fmod.h" />
     <ClInclude Include="FmodEffect.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="Note.h" />
     <ClInclude Include="RenderSystem.h" />

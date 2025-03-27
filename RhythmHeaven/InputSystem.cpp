@@ -6,6 +6,8 @@
 #include "inc/fmod_errors.h"
 #include "ScoreSystem.h"
 #include "Note.h"
+#include "GameManager.h"
+#include "RenderSystem.h"
 
 namespace input
 {
@@ -99,8 +101,11 @@ namespace input
 
 		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
 		{
+			if (game::GetState() == game::State::Tutorial)
+			{
+				game::SetState(game::State::Game);
+			}
 			input::Set(ESCAPE_KEY_INDEX, true);
-			AddToBuffer(ESCAPE_KEY_INDEX);
 		}
 		else
 		{
@@ -110,7 +115,6 @@ namespace input
 		if (GetAsyncKeyState(VK_UP) & 0x8000)
 		{
 			input::Set(USER_CMD_UP, true);
-			AddToBuffer(USER_CMD_UP);
 		}
 		else
 		{
@@ -120,7 +124,6 @@ namespace input
 		if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 		{
 			input::Set(USER_CMD_DOWN, true);
-			AddToBuffer(USER_CMD_DOWN);
 		}
 		else
 		{
@@ -156,5 +159,51 @@ namespace input
 			input::Set(USER_CMD_ENTER, false);
 		}
 		wasSpacePressed = isSpacePressed;
+	}
+
+	void keyControl(bool& mButton)
+	{
+		if (GetAsyncKeyState(VK_UP) & 0x8000)
+		{
+			if (mButton == 1)
+			{
+				effectsound::EffectPlaySound(2, effectsound::GetChannel(2));
+				render::Draw("textFile/erase_menuButton.txt", 55, 45);
+				render::menuButton(!mButton);
+				mButton = 0;
+			}
+
+		}
+
+		if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+		{
+			if (mButton == 0)
+			{
+				effectsound::EffectPlaySound(2, effectsound::GetChannel(2));
+				render::Draw("textFile/erase_menuButton.txt", 55, 45);
+				render::menuButton(!mButton);
+				mButton = 1;
+			}
+
+		}
+
+		if (mButton == 0)
+		{
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			{
+				effectsound::EffectPlaySound(3, effectsound::GetChannel(3));
+				system("cls");
+				game::SetState(game::State::Tutorial);
+			}
+		}
+		if (mButton == 1)
+		{
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			{
+				effectsound::EffectPlaySound(3, effectsound::GetChannel(3));
+				game::EndGame();
+				exit(0);
+			}
+		}
 	}
 }

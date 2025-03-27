@@ -16,6 +16,8 @@ namespace effectsound
 	
 	Channel* gEffectChannel0; //player		  //e0
 	Channel* gEffectChannel1; //player(shout) //e1
+	Channel* gEffectChannel2; //ButtonMove
+	Channel* gEffectChannel3; //SelectSound
 
 	Channel*& GetChannel(int num)
 	{
@@ -25,20 +27,26 @@ namespace effectsound
 			return gEffectChannel0;
 		case 1:
 			return gEffectChannel1;
+		case 2:
+			return gEffectChannel2;
+		case 3:
+			return gEffectChannel3;
 		}
 	}
 
 	void EffectSoundSetUp()
 	{
 		resultEffect = System_Create(&gEffectSystem);
-		resultEffect = gEffectSystem->init(7, FMOD_INIT_NORMAL, 0);
+		resultEffect = gEffectSystem->init(4, FMOD_INIT_NORMAL, 0);
 
 		char str[128];
-		for (int i = 0; i < SD_EffectSize; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			sprintf_s(str, "Media/e%d.mp3", i);
 			gEffectSystem->createSound(str, FMOD_LOOP_OFF, 0, &gEffectSound[i]);
 		}
+		gEffectSystem->createSound("Media/ButtonMove.mp3", FMOD_LOOP_OFF, 0, &gEffectSound[2]);
+		gEffectSystem->createSound("Media/SelectSound.mp3", FMOD_LOOP_OFF, 0, &gEffectSound[3]);
 	}
 
 	void EffectPlaySound(int soundNum, Channel*& gEffectChannel)

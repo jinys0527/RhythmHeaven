@@ -6,6 +6,8 @@
 #include "Fmod.h"
 #include "FmodEffect.h"
 #include "Note.h"
+#include "GameManager.h"
+using namespace std;
 
 // 애니메이션 상태를 관리하는 기본 값
 int currentAnimationState = 0;
@@ -43,12 +45,6 @@ bool IsGameRun()
     return isRun;
 }
 
-void EndGame()
-{
-    sound::Releasesound();
-    effectsound::ReleaseEffectSound();
-}
-
 int main()
 {   
     LARGE_INTEGER start, end; // QPC
@@ -57,46 +53,123 @@ int main()
 
     sound::SoundSetUp();
     effectsound::EffectSoundSetUp();
-    sound::Playsound(2, sound::GetChannel(2));
 
-    QueryPerformanceCounter(&start);
-
-    effectsound::EffectPlaySound(0, effectsound::GetChannel(0));
-    note::InitNote();
-    anim::Shame();
-    Render();
-    bool isPlaying;
-
-    while (IsGameRun()) //IsGameRun())
+    //title
     {
-        ProcessInput(); // 입력 처리 활성화
+        bool menuButton = 0;
+        sound::Playsound(0, sound::GetChannel(0));
+        render::Draw("textFile/GameTitle.txt", 25, 4); //눈치?
+        cout << endl;
+        game::delay(1);
+        render::Draw("textFile/GameTitle11.txt", 35, 23); //코치!
+        game::delay(1);
 
-        if (!anim::IsShoutAnimating() && input::HasPendingInput())
+        render::menuButton(menuButton); // 메뉴 render
+
+        render::Draw("textFile/conductor.txt", 3, 40);
+        render::Draw("textFile/title_chorusboy.txt", 160, 40);
+
+        render::setColor(render::lightgray, render::black);
+        render::GotoXY(43, 35);
+        cout << "\" 메뉴 이동은 방향키 ↑ ↓" << endl;
+        render::GotoXY(43, 37);
+        cout << "  클릭은 스페이스바양! \"";
+
+        while (game::GetState() == game::State::Title)
         {
-            int currentInput = input::GetNextInput();
-            int nextInput = input::GetNextInput();
-            // 버퍼에 저장된 입력에 따라 액션 실행
-            input::HandleBufferedInput(currentInput, nextInput);
+            input::keyControl(menuButton);
         }
+        sound::Stopsound(sound::GetChannel(0));
+    }
+    
+    //Tutorial
+    {
+        sound::Playsound(1, sound::GetChannel(1));
 
-        Update();
-        QueryPerformanceCounter(&end);
+        QueryPerformanceCounter(&start);
 
-        anim::UpdateAnimation(); //애니메이션 업데이트
+        effectsound::EffectPlaySound(0, effectsound::GetChannel(0));
+        note::InitNote(); //튜토리얼
+        anim::Shame();
+        Render();
+        bool isPlaying;
 
-        if (end.QuadPart - start.QuadPart >= 40)
+        while (game::GetState() == game::State::Tutorial && isPlaying)
         {
-            Render();
-            start.QuadPart = end.QuadPart;
+            ProcessInput(); // 입력 처리 활성화
+
+            if (!anim::IsShoutAnimating() && input::HasPendingInput())
+            {
+                int currentInput = input::GetNextInput();
+                int nextInput = input::GetNextInput();
+                // 버퍼에 저장된 입력에 따라 액션 실행
+                input::HandleBufferedInput(currentInput, nextInput);
+            }
+
+            Update();
+            QueryPerformanceCounter(&end);
+
+            anim::UpdateAnimation(); //애니메이션 업데이트
+
+            if (end.QuadPart - start.QuadPart >= 40)
+            {
+                Render();
+                start.QuadPart = end.QuadPart;
+            }
+
+            sound::GetChannel(1)->isPlaying(&isPlaying);
         }
+        effectsound::GetChannel(0)->stop();
+    }
+    //tutorial -> esc -> game
+    //tutorial -> end -> game sound::GetChannel(1)->isPlaying(&bool value)
 
-        sound::GetChannel(2)->isPlaying(&isPlaying);
-        if (!isPlaying)
+    //Game
+    {
+        sound::Playsound(2, sound::GetChannel(2));
+
+        QueryPerformanceCounter(&start);
+
+        effectsound::EffectPlaySound(0, effectsound::GetChannel(0));
+        note::InitNote();
+        anim::Shame();
+        Render();
+        bool isPlaying;
+
+        while (IsGameRun()) //IsGameRun())
         {
-            isRun = false;
+            ProcessInput(); // 입력 처리 활성화
+
+            if (!anim::IsShoutAnimating() && input::HasPendingInput())
+            {
+                int currentInput = input::GetNextInput();
+                int nextInput = input::GetNextInput();
+                // 버퍼에 저장된 입력에 따라 액션 실행
+                input::HandleBufferedInput(currentInput, nextInput);
+            }
+
+            Update();
+            QueryPerformanceCounter(&end);
+
+            anim::UpdateAnimation(); //애니메이션 업데이트
+
+            if (end.QuadPart - start.QuadPart >= 40)
+            {
+                Render();
+                start.QuadPart = end.QuadPart;
+            }
+
+            sound::GetChannel(2)->isPlaying(&isPlaying);
+            if (!isPlaying)
+            {
+                isRun = false;
+            }
         }
     }
+    
+    //ending -> end -> ranking sound끝나면
+    //ending 조건 맞춘 개수 0-7 bad, 8-15 normal, 16-18 true 0/18
+    //raking -> title goto -> title
 
-    EndGame();
     return 0;
 }
