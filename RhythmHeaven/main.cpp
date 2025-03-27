@@ -92,7 +92,7 @@ int main()
         note::InitNote(); //Æ©Åä¸®¾ó
         anim::Shame();
         Render();
-        bool isPlaying;
+        bool isPlaying = false;
 
         while (game::GetState() == game::State::Tutorial && isPlaying)
         {
