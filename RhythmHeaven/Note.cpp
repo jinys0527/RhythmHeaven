@@ -29,15 +29,37 @@ namespace note
 	Note* Note_Chorus1 = notes_Chorus1;
 	Note* Note_Chorus2 = notes_Chorus2;
 
+	Note tutorial_Notes_Player[6] = { {12554, 13888, noteType::Chorus, 0}, {22581, 23916, noteType::Chorus, 0}, {33829, 35164, noteType::Chorus, 0},
+									{43839, 45174, noteType::Chorus, 0}, {56180, 56931, noteType::Shout, 0 }, {62187, 62937, noteType::Shout, 0} };
+	Note tutorial_Notes_Chorus1[6] = { {9884, 11219, noteType::Chorus, 0}, {19912, 21246, noteType::Chorus, 0}, {31160, 35164, noteType::Chorus, 0}, 
+									{41170, 45174, noteType::Chorus, 0}, {56180, 56931, noteType::Shout, 0 }, {62187, 62937, noteType::Shout, 0} };
+	Note tutorial_Notes_Chorus2[6] = { {11219, 12554, noteType::Chorus, 0}, {21246, 22581, noteType::Chorus, 0}, {32494, 35164, noteType::Chorus, 0}, 
+									{42504, 45174, noteType::Chorus, 0}, {56180, 56931, noteType::Shout, 0 }, {62187, 62937, noteType::Shout, 0} };
+
+	Note* Tutorial_Note_Player = tutorial_Notes_Player;
+	Note* Tutorial_Note_Chorus1 = tutorial_Notes_Chorus1;
+	Note* Tutorial_Note_Chorus2 = tutorial_Notes_Chorus2;
+
 	int playerNoteIndex = 0;
 	int chorusNoteIndex1 = 0;
 	int chorusNoteIndex2 = 0;
+
+	int tutorialPlayerNoteIndex = 0;
+	int tutorialChorusNoteIndex1 = 0;
+	int tutorialChorusNoteIndex2 = 0;
 
 	void InitNote() //ms단위 노트 초기화
 	{
 		CalcDuration(Note_Player, 18);
 		CalcDuration(Note_Chorus1, 18);
 		CalcDuration(Note_Chorus2, 18);
+	}
+
+	void InitTutorialNote()
+	{
+		CalcDuration(Tutorial_Note_Player, 6);
+		CalcDuration(Tutorial_Note_Chorus1, 6);
+		CalcDuration(Tutorial_Note_Chorus2, 6);
 	}
 
 	void CalcDuration(Note*& note, int size)
@@ -61,6 +83,19 @@ namespace note
 		}
 	}
 
+	Note*& GetTutorialNotes(anim::Character*& character)
+	{
+		switch (character->characterType)
+		{
+		case anim::CharacterType::PLAYER:
+			return Tutorial_Note_Player;
+		case anim::CharacterType::CHORUS1:
+			return Tutorial_Note_Chorus1;
+		case anim::CharacterType::CHORUS2:
+			return Tutorial_Note_Chorus2;
+		}
+	}
+
 	int& GetIndex(anim::Character*& character) {
 		switch (character->characterType)
 		{
@@ -70,6 +105,18 @@ namespace note
 			return chorusNoteIndex1;
 		case anim::CharacterType::CHORUS2:
 			return chorusNoteIndex2;
+		}
+	}
+
+	int& GetTutorialIndex(anim::Character*& character) {
+		switch (character->characterType)
+		{
+		case anim::CharacterType::PLAYER:
+			return tutorialPlayerNoteIndex;
+		case anim::CharacterType::CHORUS1:
+			return tutorialChorusNoteIndex1;
+		case anim::CharacterType::CHORUS2:
+			return tutorialChorusNoteIndex2;
 		}
 	}
 }

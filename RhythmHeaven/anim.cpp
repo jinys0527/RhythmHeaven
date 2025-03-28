@@ -5,6 +5,7 @@
 #include "FmodEffect.h"
 #include "Fmod.h"
 #include "Note.h"
+#include "GameManager.h"
 using namespace std;
 
 namespace anim
@@ -149,6 +150,12 @@ namespace anim
 		{
 			DrawCharacter(characters[i].x, characters[i].y, characters[i].currentFrame);
 		}
+		game::State state = game::GetState();
+		if (state == game::State::Tutorial)
+		{
+			render::DrawWord(3, 1, "textFile/practice.txt");
+			render::DrawWord(170, 67, "textFile/skip.txt");
+		}
 	}
 
 	void DrawCharacter(int x, int y, const char* filename)
@@ -170,8 +177,17 @@ namespace anim
 
 	void UpdateAnimation()
 	{
-		UpdateAIAnimation(GetCharacter(0), note::GetNotes(GetCharacter(0)), 18);
-		UpdateAIAnimation(GetCharacter(1), note::GetNotes(GetCharacter(1)), 18);
+		game::State state = game::GetState();
+		if (state == game::State::Game)
+		{
+			UpdateAIAnimation(GetCharacter(0), note::GetNotes(GetCharacter(0)), 18);
+			UpdateAIAnimation(GetCharacter(1), note::GetNotes(GetCharacter(1)), 18);
+		}
+		else if (state == game::State::Tutorial)
+		{
+			UpdateAIAnimation(GetCharacter(0), note::GetTutorialNotes(GetCharacter(0)), 6);
+			UpdateAIAnimation(GetCharacter(1), note::GetTutorialNotes(GetCharacter(1)), 6);
+		}
 		UpdateAnimation(GetCharacter(0));
 		UpdateAnimation(GetCharacter(1));
 		UpdateAnimation(GetCharacter(2));
@@ -357,45 +373,91 @@ namespace anim
 
 	void UpdateAIAnimation(Character*& character, note::Note*& note, int noteSize)
 	{
-		unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
-		LARGE_INTEGER end;
-		QueryPerformanceCounter(&end);
-		character->lastPlayPos = end.QuadPart;
-		const int tolerance = 20; //오차 범위
-
-		int& index = note::GetIndex(character);
-
-		if ((note[index].startTime - tolerance) <= playPos && playPos <= (note[index].endTime + tolerance))
+		if (game::GetState() == game::State::Game)
 		{
-			AssignState(character, note);
-			if (note[index].duration < 200)
+			unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
+			LARGE_INTEGER end;
+			QueryPerformanceCounter(&end);
+			character->lastPlayPos = end.QuadPart;
+			const int tolerance = 20; //오차 범위
+
+			int& index = note::GetIndex(character);
+
+			if ((note[index].startTime - tolerance) <= playPos && playPos <= (note[index].endTime + tolerance))
 			{
-				if (character->currentState == CHANT)
+				AssignState(character, note);
+				if (note[index].duration < 200)
 				{
-					character->currentState = FAST_CHANT;
+					if (character->currentState == CHANT)
+					{
+						character->currentState = FAST_CHANT;
+					}
+					else if (character->currentState == SHOUT)
+					{
+						character->currentState = FAST_SHOUT;
+					}
+					bool animEnd = AIAnimEnd(character, note[index].duration);
+					while (!animEnd)
+					{
+						animEnd = AIAnimEnd(character, note[index].duration);
+					}
 				}
-				else if (character->currentState == SHOUT)
+				else if (note[index].duration >= 200)
 				{
-					character->currentState = FAST_SHOUT;
-				}
-				bool animEnd = AIAnimEnd(character, note[index].duration);
-				while (!animEnd)
-				{
-					animEnd = AIAnimEnd(character, note[index].duration);
+					bool animEnd = AIAnimEnd(character, note[index].duration);
+					while (!animEnd)
+					{
+						animEnd = AIAnimEnd(character, note[index].duration);
+					}
 				}
 			}
-			else if (note[index].duration >= 200)
+			else if (playPos > (note[index].endTime + tolerance) && playPos <= (note[index + 1].startTime + tolerance))
 			{
-				bool animEnd = AIAnimEnd(character, note[index].duration);
-				while (!animEnd)
-				{
-					animEnd = AIAnimEnd(character, note[index].duration);
-				}
+				index++;
 			}
 		}
-		else if(playPos > (note[index].endTime + tolerance) && playPos <= (note[index+1].startTime + tolerance))
+		else if (game::GetState() == game::State::Tutorial)
 		{
-			index++;
+			unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(1));
+			LARGE_INTEGER end;
+			QueryPerformanceCounter(&end);
+			character->lastPlayPos = end.QuadPart;
+			const int tolerance = 20; //오차 범위
+
+ 			int& index = note::GetTutorialIndex(character);
+
+			if ((note[index].startTime - tolerance) <= playPos && playPos <= (note[index].endTime + tolerance))
+			{
+				AssignState(character, note);
+				if (note[index].duration < 200)
+				{
+					if (character->currentState == CHANT)
+					{
+						character->currentState = FAST_CHANT;
+					}
+					else if (character->currentState == SHOUT)
+					{
+						character->currentState = FAST_SHOUT;
+					}
+					bool animEnd = AIAnimEnd(character, note[index].duration);
+					while (!animEnd)
+					{
+						animEnd = AIAnimEnd(character, note[index].duration);
+					}
+				}
+				else if (note[index].duration >= 200)
+				{
+					bool animEnd = AIAnimEnd(character, note[index].duration);
+					while (!animEnd)
+					{
+						animEnd = AIAnimEnd(character, note[index].duration);
+					}
+				}
+			}
+			else if (playPos > (note[index].endTime + tolerance) && playPos <= (note[index + 1].startTime + tolerance))
+			{
+				index++;
+			}
 		}
 	}
 

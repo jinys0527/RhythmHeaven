@@ -31,7 +31,7 @@ namespace sound
 		result = gSystem->init(7, FMOD_INIT_NORMAL, 0);
 
 		gSystem->createSound("Media/TitleSound.mp3", FMOD_LOOP_NORMAL, 0, &gSound[0]);
-		gSystem->createSound("Media/TutorialSound.mp3", FMOD_LOOP_OFF, 0, &gSound[1]);
+		gSystem->createSound("Media/TutorialMusic.mp3", FMOD_LOOP_OFF, 0, &gSound[1]);
 		gSystem->createSound("Media/GleeClub.mp3", FMOD_LOOP_OFF, 0, &gSound[2]);
 		gSystem->createSound("Media/BadEndingSound.mp3", FMOD_LOOP_OFF, 0, &gSound[3]);
 		gSystem->createSound("Media/NormalEndingSound.mp3", FMOD_LOOP_OFF, 0, &gSound[4]);

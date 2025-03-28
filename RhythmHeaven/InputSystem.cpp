@@ -136,7 +136,14 @@ namespace input
 			AddToBuffer(USER_CMD_SPACE);
 			anim::StartAnimation(anim::GetCharacter(2), anim::MUTE_CHANT); // 세 번째 캐릭터 조용해지는 애니메이션
  			effectsound::PauseChannel(effectsound::GetChannel(0));
-			score::JudgeEndTime(anim::GetCharacter(2), note::GetNotes(anim::GetCharacter(2)));
+			if (game::GetState() == game::State::Game)
+			{
+				score::JudgeEndTime(anim::GetCharacter(2), note::GetNotes(anim::GetCharacter(2)));
+			}
+			else if (game::GetState() == game::State::Tutorial)
+			{
+				score::JudgeEndTime(anim::GetCharacter(2), note::GetTutorialNotes(anim::GetCharacter(2)));
+			}
 
 		}
 		else if(!isSpacePressed && wasSpacePressed)
@@ -144,7 +151,14 @@ namespace input
 			input::Set(USER_CMD_SPACE, false); 
 			anim::StartAnimation(anim::GetCharacter(2), anim::CHANT); // 세 번째 캐릭터 말하기 애니메이션
 			effectsound::UnpauseChannel(effectsound::GetChannel(0));
-			score::JudgeStartTime(anim::GetCharacter(2), note::GetNotes(anim::GetCharacter(2)));
+			if (game::GetState() == game::State::Game)
+			{
+				score::JudgeStartTime(anim::GetCharacter(2), note::GetNotes(anim::GetCharacter(2)));
+			}
+			else if (game::GetState() == game::State::Tutorial)
+			{
+				score::JudgeStartTime(anim::GetCharacter(2), note::GetTutorialNotes(anim::GetCharacter(2)));
+			}
 		}
 
 		if (isSpacePressed && GetAsyncKeyState(VK_RETURN) & 0x8000)

@@ -25,6 +25,9 @@ namespace note
 
 	int& GetIndex(anim::Character*& character);
 	void InitNote();
+	void InitTutorialNote();
 	void CalcDuration(Note*& note, int size);
 	Note*& GetNotes(anim::Character*& character);
+	Note*& GetTutorialNotes(anim::Character*& character);
+	int& GetTutorialIndex(anim::Character*& character);
 }

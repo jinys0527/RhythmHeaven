@@ -7,6 +7,7 @@
 #include "FmodEffect.h"
 #include "Note.h"
 #include "GameManager.h"
+#include "ScoreSystem.h"
 using namespace std;
 
 // 애니메이션 상태를 관리하는 기본 값
@@ -49,12 +50,14 @@ int main()
 {   
     LARGE_INTEGER start, end; // QPC
 
+    loop:
+
     anim::StartGame();
 
     sound::SoundSetUp();
     effectsound::EffectSoundSetUp();
 
-    //title
+    ////title
     {
         bool menuButton = 0;
         sound::Playsound(0, sound::GetChannel(0));
@@ -89,10 +92,12 @@ int main()
         QueryPerformanceCounter(&start);
 
         effectsound::EffectPlaySound(0, effectsound::GetChannel(0));
-        note::InitNote(); //튜토리얼
+        note::InitTutorialNote(); //튜토리얼
         anim::Shame();
         Render();
+
         bool isPlaying = false;
+        sound::GetChannel(1)->isPlaying(&isPlaying);
 
         while (game::GetState() == game::State::Tutorial && isPlaying)
         {
@@ -113,6 +118,8 @@ int main()
 
             if (end.QuadPart - start.QuadPart >= 40)
             {
+                render::DrawWord(3, 1, "textFile/practice.txt");
+                render::DrawWord(170, 67, "textFile/skip.txt");
                 Render();
                 start.QuadPart = end.QuadPart;
             }
@@ -165,11 +172,27 @@ int main()
                 isRun = false;
             }
         }
+        effectsound::GetChannel(0)->stop();
     }
-    
+
+    render::ScreenClear();
+    render::ScreenFlipping();
+    render::ReturnToStandardConsole();
+
+    int presentScore = score::GetScore();
+    render::showEnding(presentScore, 0, 0);
+
+    system("cls");
+   
+    //랭킹씬 출력
+    score::callShowScore();
     //ending -> end -> ranking sound끝나면
     //ending 조건 맞춘 개수 0-7 bad, 8-15 normal, 16-18 true 0/18
     //raking -> title goto -> title
+    sound::Releasesound();
+    effectsound::ReleaseEffectSound();
+    game::SetState(game::State::Title);
+    goto loop;
 
     return 0;
 }

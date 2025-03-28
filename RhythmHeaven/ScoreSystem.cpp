@@ -5,6 +5,8 @@
 #include "Fmod.h"
 #include "Note.h"
 #include "Anim.h"
+#include "GameManager.h"
+#include "RenderSystem.h"
 
 
 namespace score
@@ -366,7 +368,7 @@ namespace score
 
             // 이 자릿수에 해당하는 ASCII 아트 그리기
             for (int i = 0; i < 7; i++) {
-				Gotoxy(x + 18 + position * 12, y + i);// 18은 3자리 숫자를 표시하기 위한 간격
+				render::GotoXY(x + 18 + position * 12, y + i);// 18은 3자리 숫자를 표시하기 위한 간격
                 for (int j = 0; j < 13; j++) {
                     printf("%c", g_FontData.number[digit][i][j]);
                 }
@@ -382,7 +384,7 @@ namespace score
         // 0인 경우 별도 처리
         if (Num == 0) {
             for (int i = 0; i < 7; i++) {
-                Gotoxy(x, y + i);
+                render::GotoXY(x, y + i);
                 for (int j = 0; j < 13; j++) {
                     printf("%c", g_FontData.number[0][i][j]);
                 }
@@ -404,7 +406,7 @@ namespace score
         for (int pos = numDigits - 1; pos >= 0; pos--) {
             int displayPos = numDigits - 1 - pos;
             for (int i = 0; i < 7; i++) {
-                Gotoxy(x + displayPos * 12, y + i);
+                render::GotoXY(x + displayPos * 12, y + i);
                 for (int j = 0; j < 13; j++) {
                     printf("%c", g_FontData.number[digits[pos]][i][j]);
                 }
@@ -415,7 +417,7 @@ namespace score
     // "SCORE" 텍스트 표시
     void PrintScoreTEXT(int x, int y) {
         for (int i = 0; i < 7; i++) {
-            Gotoxy(x, y + i);
+            render::GotoXY(x, y + i);
             for (int j = 0; j < 36; j++) {
                 printf("%c", g_FontData.scoreText[i][j]);
             }
@@ -425,7 +427,7 @@ namespace score
     // "HIGH SCORE" 텍스트 표시
     void PrintHighScoreTEXT(int x, int y) {
         for (int i = 0; i < 6; i++) {
-            Gotoxy(x, y + i);
+            render::GotoXY(x, y + i);
             for (int j = 0; j < 69; j++) {
                 printf("%c", g_FontData.highScoreText[i][j]);
             }
@@ -465,63 +467,118 @@ namespace score
         }
     }
 
-    long long myAbs(long long num) {
-        if (num < 0)
-            return -num;
-        return num;
-    }
-
     void JudgeStartTime(anim::Character*& character, note::Note*& note) {
-        int& j_index = note::GetIndex(character);
-        
-        unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
-        const int tolerance = 1000; //오차 범위
-        long long low = note[j_index].startTime - tolerance;
-        long long high = note[j_index].startTime + tolerance;
-        JudgeScore();
-        if (low > playPos)
+        if (game::GetState() == game::State::Game)
         {
-            return;
+            int& j_index = note::GetIndex(character);
+
+            unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
+            const int tolerance = 1000; //오차 범위
+            long long low = note[j_index].startTime - tolerance;
+            long long high = note[j_index].startTime + tolerance;
+            JudgeScore();
+            if (low > playPos)
+            {
+                return;
+            }
+
+            if (low <= playPos && playPos <= high) {
+                syncStart = true;
+            }
+            else
+            {
+                syncStart = false;
+            }
+
+            if (character->currentState == anim::AnimState::SHOUT)
+            {
+                JudgeShout();
+            }
         }
 
-        if (low <= playPos && playPos <= high) {
-            syncStart = true;
-        }
-        else
+        else if (game::GetState() == game::State::Tutorial)
         {
-            syncStart = false;
-        }
+            int& j_index = note::GetTutorialIndex(character);
 
-        if (character->currentState == anim::AnimState::SHOUT)
-        {
-            JudgeShout();
-        }
+            unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(1));
+            const int tolerance = 1000; //오차 범위
+            long long low = note[j_index].startTime - tolerance;
+            long long high = note[j_index].startTime + tolerance;
+            JudgeScore();
+            if (low > playPos)
+            {
+                return;
+            }
+
+            if (low <= playPos && playPos <= high) {
+                syncStart = true;
+            }
+            else
+            {
+                syncStart = false;
+            }
+
+            if (character->currentState == anim::AnimState::SHOUT)
+            {
+                JudgeShout();
+            }
+        }       
     }
 
     void JudgeEndTime(anim::Character*& character, note::Note*& note) {
-        int& j_index = note::GetIndex(character);
-        unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
-        const int tolerance = 1000; //오차 범위
-        long long low = note[j_index].endTime - tolerance;
-        long long high = note[j_index].endTime + tolerance;
-
-        if (low > playPos)
+        if (game::GetState() == game::State::Game)
         {
-            return;
-        }
+            int& j_index = note::GetIndex(character);
+            unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
+            const int tolerance = 1000; //오차 범위
+            long long low = note[j_index].endTime - tolerance;
+            long long high = note[j_index].endTime + tolerance;
 
-        if (low <= playPos && playPos <= high) {
-            syncEnd = true;
-        }
-        else
-        {
-            syncEnd = false;
-        }
+            if (low > playPos)
+            {
+                return;
+            }
 
-        if (playPos > note[j_index].endTime && playPos <= note[j_index + 1].startTime)
+            if (low <= playPos && playPos <= high) {
+                syncEnd = true;
+            }
+            else
+            {
+                syncEnd = false;
+            }
+
+            if (playPos > note[j_index].endTime && playPos <= note[j_index + 1].startTime)
+            {
+                JudgeScore();
+                j_index++;
+            }
+        }
+        else if (game::GetState() == game::State::Tutorial)
         {
-            JudgeScore();
-            j_index++;
+            int& j_index = note::GetTutorialIndex(character);
+            unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(1));
+            const int tolerance = 1000; //오차 범위
+            long long low = note[j_index].endTime - tolerance;
+            long long high = note[j_index].endTime + tolerance;
+
+            if (low > playPos)
+            {
+                return;
+            }
+
+            if (low <= playPos && playPos <= high) {
+                syncEnd = true;
+            }
+            else
+            {
+                syncEnd = false;
+            }
+
+            if (playPos > note[j_index].endTime && playPos <= note[j_index + 1].startTime)
+            {
+                JudgeScore();
+                j_index++;
+            }
         }
     }
 
@@ -531,7 +588,7 @@ namespace score
             int charIndex = name[i];
             if (charIndex >= 0 && charIndex < 26) {
                 for (int j = 0; j < 5; j++) {
-                    Gotoxy(x + i * 12, y + j);
+                    render::GotoXY(x + i * 12, y + j);
                     printf("%s", g_FontData.alphabet[charIndex][j]);
                 }
             }
@@ -542,14 +599,14 @@ namespace score
     void PrintChar(int x, int y, int _char) {
         // 먼저 영역 지우기
         for (int i = 0; i < 5; i++) {
-            Gotoxy(x, y + i);
+            render::GotoXY(x, y + i);
             printf("              ");
         }
 
         // 문자 인덱스 유효성 검사
         if (_char >= 0 && _char < 26) {
             for (int i = 0; i < 5; i++) {
-                Gotoxy(x, y + i);
+                render::GotoXY(x, y + i);
                 printf("%s", g_FontData.alphabet[_char][i]);
             }
         }
@@ -557,7 +614,6 @@ namespace score
 
     // 최종 점수 표시 및 닉네임 입력 처리
     void ShowScore(ScoreData* scoreData) {
-		sound::SoundSetUp();
         sound::Playsound(6, sound::GetChannel(6));
         
         if (!scoreData) {
@@ -571,8 +627,6 @@ namespace score
         const int nickX = 29;
         const int nickY = 10;
 
-        system("cls");
-
         // 현재 점수 표시
         PrintScoreTEXT(myScoreX + 18, myScoreY - 9);
         PrintNumber(scoreData, myScoreX, myScoreY, 0);
@@ -580,7 +634,7 @@ namespace score
         // 최고 점수 표시
         int highScore = LoadScore(scoreData);
         PrintHighScoreTEXT(highScoreX, highScoreY);
-		ShowNumber(highScoreX + 16, highScoreY + 7, highScore); // 16은 3자리 숫자를 표시하기 위한 간격
+		ShowNumber(highScoreX + 26, highScoreY + 7, highScore); // 16은 3자리 숫자를 표시하기 위한 간격
         PrintNickName(highScoreX + 16, highScoreY + 17, scoreData->nickname);
 
         // 닉네임 입력 처리
@@ -590,7 +644,7 @@ namespace score
         // 초기 문자 및 밑줄 그리기
         PrintChar(myScoreX + charPosition * nickX, myScoreY + nickY, selectedChar);
         for (int j = 0; j < 3; j++) {
-            Gotoxy(myScoreX - 2 + j * nickX, myScoreY + nickY + 6, 10);
+            render::GotoXY(myScoreX - 2 + j * nickX, myScoreY + nickY + 6);
             printf("_____________");
         }
 
@@ -657,5 +711,17 @@ namespace score
         {
             anim::Shame();
         }
+    }
+
+    int GetScore()
+    {
+        return a_ScoreData.currentScore;
+    }
+
+    void callShowScore() {
+        ScoreData scoreData;
+        Initialize(&scoreData);
+        scoreData.currentScore = a_ScoreData.currentScore;
+        score::ShowScore(&scoreData);
     }
 }

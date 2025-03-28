@@ -25,6 +25,8 @@ namespace score
         int nickname[3];     // 닉네임 (알파벳 인덱스 3개)
     };
 
+    static ScoreData a_ScoreData = { 0, {0, 0, 0} };
+
     // 폰트와 그래픽 관련 구조체
     struct FontData {
         char number[10][7][13];       // 숫자 0-9 ASCII 아트
@@ -37,9 +39,6 @@ namespace score
     void Initialize(ScoreData* scoreData);
     FontData* GetFontData();
 
-    // 유틸리티 함수: 색깔과 함께 커서 위치 설정
-    // 원래 쓰던 걸로
-    void Gotoxy(int x, int y, unsigned short text_Color = 15, unsigned short back_Color = 0);
 
     // 점수 관련 함수
     void PrintNumber(ScoreData* scoreData, int x, int y, int Num);  // 점수를 업데이트하고 출력
@@ -52,6 +51,8 @@ namespace score
     void JudgeEndTime(anim::Character*& character, note::Note*& note);
     void JudgeScore();
     void JudgeShout();
+    void callShowScore();
+    int GetScore();
 
     // 텍스트 표시 함수
     void PrintScoreTEXT(int x, int y);                             // "SCORE" 텍스트 표시
