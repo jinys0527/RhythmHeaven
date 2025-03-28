@@ -127,6 +127,7 @@ int main()
             sound::GetChannel(1)->isPlaying(&isPlaying);
         }
         effectsound::GetChannel(0)->stop();
+        game::SetState(game::State::Game);
     }
     //tutorial -> esc -> game
     //tutorial -> end -> game sound::GetChannel(1)->isPlaying(&bool value)
