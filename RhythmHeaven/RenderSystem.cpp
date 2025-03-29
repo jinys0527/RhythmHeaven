@@ -115,14 +115,14 @@ namespace render
 		{
 			return;
 		}
-		char* Word = new char[maxsize_gTitle];
+		char* word = new char[maxsize_gTitle];
 		static int xPos = x;
-		while (fgets(Word, maxsize_gTitle, fp) != NULL)
+		while (fgets(word, maxsize_gTitle, fp) != NULL)
 		{   
 			xPos = x;
-			for (int i = 0; i < strlen(Word); i++)
+			for (int i = 0; i < strlen(word); i++)
 			{
-				char tem = Word[i];
+				char tem = word[i];
 
 
 				if (tem == '1')
@@ -205,7 +205,7 @@ namespace render
 			y++;
 		}
 		fclose(fp);
-		delete[] Word;
+		delete[] word;
 	}
 
 	bool GetIndex()

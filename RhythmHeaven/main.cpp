@@ -53,7 +53,7 @@ int main()
     loop:
 
     anim::StartGame();
-
+    isRun = true;
     sound::SoundSetUp();
     effectsound::EffectSoundSetUp();
 
@@ -87,15 +87,14 @@ int main()
     
     //Tutorial
     {
+        note::InitTutorialNote(); //Æ©Åä¸®¾ó
+ 
+        anim::Shame();
+
         sound::Playsound(1, sound::GetChannel(1));
+        effectsound::EffectPlaySound(0, effectsound::GetChannel(0));
 
         QueryPerformanceCounter(&start);
-
-        effectsound::EffectPlaySound(0, effectsound::GetChannel(0));
-        note::InitTutorialNote(); //Æ©Åä¸®¾ó
-        anim::Shame();
-        Render();
-
         bool isPlaying = false;
         sound::GetChannel(1)->isPlaying(&isPlaying);
 
@@ -118,8 +117,6 @@ int main()
 
             if (end.QuadPart - start.QuadPart >= 40)
             {
-                render::DrawWord(3, 1, "textFile/practice.txt");
-                render::DrawWord(170, 67, "textFile/skip.txt");
                 Render();
                 start.QuadPart = end.QuadPart;
             }
@@ -129,8 +126,6 @@ int main()
         effectsound::GetChannel(0)->stop();
         game::SetState(game::State::Game);
     }
-    //tutorial -> esc -> game
-    //tutorial -> end -> game sound::GetChannel(1)->isPlaying(&bool value)
 
     //Game
     {
@@ -141,7 +136,6 @@ int main()
         effectsound::EffectPlaySound(0, effectsound::GetChannel(0));
         note::InitNote();
         anim::Shame();
-        Render();
         bool isPlaying;
 
         while (IsGameRun()) //IsGameRun())
@@ -180,6 +174,7 @@ int main()
     render::ScreenFlipping();
     render::ReturnToStandardConsole();
 
+    //ending Á¶°Ç ¸ÂÃá °³¼ö 0-7 bad, 8-15 normal, 16-18 true 0/18
     int presentScore = score::GetScore();
     render::showEnding(presentScore, 0, 0);
 
@@ -187,9 +182,8 @@ int main()
    
     //·©Å·¾À Ãâ·Â
     score::callShowScore();
-    //ending -> end -> ranking sound³¡³ª¸é
-    //ending Á¶°Ç ¸ÂÃá °³¼ö 0-7 bad, 8-15 normal, 16-18 true 0/18
-    //raking -> title goto -> title
+
+    
     sound::Releasesound();
     effectsound::ReleaseEffectSound();
     game::SetState(game::State::Title);

@@ -476,7 +476,7 @@ namespace score
             const int tolerance = 1000; //오차 범위
             long long low = note[j_index].startTime - tolerance;
             long long high = note[j_index].startTime + tolerance;
-            JudgeScore();
+     
             if (low > playPos)
             {
                 return;
@@ -504,7 +504,7 @@ namespace score
             const int tolerance = 1000; //오차 범위
             long long low = note[j_index].startTime - tolerance;
             long long high = note[j_index].startTime + tolerance;
-            JudgeScore();
+           
             if (low > playPos)
             {
                 return;
@@ -567,7 +567,7 @@ namespace score
             }
 
             if (low <= playPos && playPos <= high) {
-                syncEnd = true;
+                syncEnd = true; 
             }
             else
             {
@@ -693,7 +693,7 @@ namespace score
     {
         if (syncStart && syncEnd)
         {
-            g_ScoreData.currentScore += 1;
+            a_ScoreData.currentScore += 1;
         }
         else
         {
@@ -705,7 +705,7 @@ namespace score
     {
         if (syncStart)
         {
-            g_ScoreData.currentScore += 1;
+            a_ScoreData.currentScore += 1;
         }
         else
         {

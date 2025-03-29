@@ -145,16 +145,16 @@ namespace anim
 
 	void DrawScreen()
 	{
-		// 현재 캐릭터 프레임을 그린다
-		for (int i = 0; i < 4; i++)
-		{
-			DrawCharacter(characters[i].x, characters[i].y, characters[i].currentFrame);
-		}
 		game::State state = game::GetState();
 		if (state == game::State::Tutorial)
 		{
 			render::DrawWord(3, 1, "textFile/practice.txt");
 			render::DrawWord(170, 67, "textFile/skip.txt");
+		}
+		// 현재 캐릭터 프레임을 그린다
+		for (int i = 0; i < 4; i++)
+		{
+			DrawCharacter(characters[i].x, characters[i].y, characters[i].currentFrame);
 		}
 	}
 
@@ -166,13 +166,13 @@ namespace anim
 		{
 			return;
 		}
-		char* Word = new char[MAX_CHARACTER_SIZE];
-		while (fgets(Word, MAX_CHARACTER_SIZE, fp) != NULL)
+		char* word = new char[MAX_CHARACTER_SIZE];
+		while (fgets(word, MAX_CHARACTER_SIZE, fp) != NULL)
 		{
-			render::ScreenDraw(x, y++, Word);
+			render::ScreenDraw(x, y++, word);
 		}
 		fclose(fp);
-		delete[] Word;
+		delete[] word;
 	}
 
 	void UpdateAnimation()

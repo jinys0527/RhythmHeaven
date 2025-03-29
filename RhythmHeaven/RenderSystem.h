@@ -5,7 +5,7 @@
 
 namespace render
 {
-    enum
+    enum color
     {
         black,
         blue,

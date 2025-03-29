@@ -103,6 +103,12 @@ namespace input
 		{
 			if (game::GetState() == game::State::Tutorial)
 			{
+				bool isPlay;
+				sound::GetChannel(1)->isPlaying(&isPlay);
+				if (isPlay)
+				{
+					sound::GetChannel(1)->stop();
+				}
 				game::SetState(game::State::Game);
 			}
 			input::Set(ESCAPE_KEY_INDEX, true);
