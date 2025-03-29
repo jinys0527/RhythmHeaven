@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 
 namespace game
 {
@@ -15,5 +16,16 @@ namespace game
 
 	void delay(int x);
 
+	void Render();
+	void ProcessInput();
+	void Update();
+	bool IsGameRun();
+	void SetUp();
+
+	void ShowTitle();
+	void StartTutorial(LARGE_INTEGER start, LARGE_INTEGER end);
+	void StartGame(LARGE_INTEGER start, LARGE_INTEGER end);
+	void ShowEnding();
+	void ShowRanking();
 	void EndGame();
 }

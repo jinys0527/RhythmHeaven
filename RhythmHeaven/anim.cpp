@@ -124,7 +124,7 @@ namespace anim
 		character->characterType = characterType;
 	}
 
-	void StartGame()
+	void PrepareCharacter()
 	{
 		render::InitScreen();
 

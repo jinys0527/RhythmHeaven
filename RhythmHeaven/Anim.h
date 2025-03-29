@@ -46,7 +46,7 @@ namespace anim
                     const char* currentFrame, AnimState currentState, 
                     int frameIndex, bool isAnimating, CharacterType charactertype); //초기화 함수
 
-    void StartGame();
+    void PrepareCharacter();
     void DrawScreen();
     void DrawCharacter(int x, int y, const char* filename);
     void UpdateAnimation();
