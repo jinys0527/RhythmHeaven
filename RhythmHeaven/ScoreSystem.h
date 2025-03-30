@@ -25,7 +25,7 @@ namespace score
         int nickname[3];     // 닉네임 (알파벳 인덱스 3개)
     };
 
-    static ScoreData a_ScoreData = { 0, {0, 0, 0} };
+    static ScoreData a_ScoreData = { 18, {0, 0, 0} };
 
     // 폰트와 그래픽 관련 구조체
     struct FontData {

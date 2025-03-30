@@ -14,6 +14,7 @@ namespace score
     // 전역 인스턴스 (내부에서만 접근)
     static Judgepoint g_judges;
     static ScoreData g_ScoreData = { 0, {0, 0, 0} };
+    ScoreData scoreData;
     static FontData g_FontData = {
         // 숫자 0-9 ASCII 아트
         {
@@ -473,7 +474,7 @@ namespace score
             int& j_index = note::GetIndex(character);
 
             unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
-            const int tolerance = 1000; //오차 범위
+            const int tolerance = 300; //오차 범위
             long long low = note[j_index].startTime - tolerance;
             long long high = note[j_index].startTime + tolerance;
      
@@ -501,7 +502,7 @@ namespace score
             int& j_index = note::GetTutorialIndex(character);
 
             unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(1));
-            const int tolerance = 1000; //오차 범위
+            const int tolerance = 300; //오차 범위
             long long low = note[j_index].startTime - tolerance;
             long long high = note[j_index].startTime + tolerance;
            
@@ -530,7 +531,7 @@ namespace score
         {
             int& j_index = note::GetIndex(character);
             unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
-            const int tolerance = 1000; //오차 범위
+            const int tolerance = 300; //오차 범위
             long long low = note[j_index].endTime - tolerance;
             long long high = note[j_index].endTime + tolerance;
 
@@ -557,7 +558,7 @@ namespace score
         {
             int& j_index = note::GetTutorialIndex(character);
             unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(1));
-            const int tolerance = 1000; //오차 범위
+            const int tolerance = 300; //오차 범위
             long long low = note[j_index].endTime - tolerance;
             long long high = note[j_index].endTime + tolerance;
 
@@ -693,7 +694,7 @@ namespace score
     {
         if (syncStart && syncEnd)
         {
-            a_ScoreData.currentScore += 1;
+            a_ScoreData.currentScore -= 1;
         }
         else
         {
@@ -705,7 +706,7 @@ namespace score
     {
         if (syncStart)
         {
-            a_ScoreData.currentScore += 1;
+            a_ScoreData.currentScore -= 1;
         }
         else
         {
@@ -719,7 +720,6 @@ namespace score
     }
 
     void callShowScore() {
-        ScoreData scoreData;
         Initialize(&scoreData);
         scoreData.currentScore = a_ScoreData.currentScore;
         score::ShowScore(&scoreData);
