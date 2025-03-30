@@ -139,7 +139,10 @@ namespace input
 		if (isSpacePressed && !wasSpacePressed)
 		{
 			input::Set(USER_CMD_SPACE, true);
-			AddToBuffer(USER_CMD_SPACE);
+			if (bufferStart != 1)
+			{
+				AddToBuffer(USER_CMD_SPACE);
+			}
 			anim::StartAnimation(anim::GetCharacter(2), anim::MUTE_CHANT); // 세 번째 캐릭터 조용해지는 애니메이션
  			effectsound::PauseChannel(effectsound::GetChannel(0));
 			if (game::GetState() == game::State::Game)
@@ -170,7 +173,11 @@ namespace input
 		if (isSpacePressed && GetAsyncKeyState(VK_RETURN) & 0x8000)
 		{
 			input::Set(USER_CMD_ENTER, true);
-			AddToBuffer(USER_CMD_ENTER);
+			if (bufferStart == 1)
+			{
+				AddToBuffer(USER_CMD_ENTER);
+			}
+			
 			anim::StartAnimation(anim::GetCharacter(2), anim::PLAYER_SHOUT); // 세 번째 캐릭터 샤우트 애니메이션
 			score::JudgeStartTime(anim::GetCharacter(2), note::GetNotes(anim::GetCharacter(2)));
 		}
@@ -209,7 +216,7 @@ namespace input
 
 		if (mButton == 0)
 		{
-			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 			{
 				effectsound::EffectPlaySound(3, effectsound::GetChannel(3));
 				system("cls");
@@ -218,7 +225,7 @@ namespace input
 		}
 		if (mButton == 1)
 		{
-			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 			{
 				effectsound::EffectPlaySound(3, effectsound::GetChannel(3));
 				game::EndGame();

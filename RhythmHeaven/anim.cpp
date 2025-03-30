@@ -518,8 +518,14 @@ namespace anim
 
 	void Shame()
 	{
-		StartAnimation(GetCharacter(0), AnimState::SHAME);
-		StartAnimation(GetCharacter(1), AnimState::SHAME);
+		if (!GetCharacter(0)->isAnimating)
+		{
+			StartAnimation(GetCharacter(0), AnimState::SHAME);
+		}
+		if (!GetCharacter(1)->isAnimating)
+		{
+			StartAnimation(GetCharacter(1), AnimState::SHAME);
+		}
 		render::ScreenClear();
 		anim::DrawScreen();
 		render::ScreenFlipping();

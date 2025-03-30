@@ -378,6 +378,7 @@ namespace render
 			sound::Playsound(3, sound::GetChannel(3));
 			Draw("textFile/Bad_Ending.txt", x, y); //배드엔딩
 			game::delay(10); // 잠시 HOLD
+			system("cls");
 			Draw("textFile/bad_ment.txt", 5, 1);
 			game::delay(5);
 		}
@@ -386,6 +387,7 @@ namespace render
 			sound::Playsound(4, sound::GetChannel(4));
 			Draw("textFile/Normal_Ending.txt", x, y); //노말엔딩
 			game::delay(10); // 잠시 HOLD
+			system("cls");
 			Draw("textFile/normal_ment.txt", 5, 1);
 			game::delay(5);
 		}
@@ -394,6 +396,7 @@ namespace render
 			sound::Playsound(5, sound::GetChannel(5));
 			Draw("textFile/True_Ending.txt", x, y); //진엔딩
 			game::delay(10); // 잠시 HOLD
+			system("cls");
 			Draw("textFile/true_ment.txt", 5, 1);
 			game::delay(5);
 		}

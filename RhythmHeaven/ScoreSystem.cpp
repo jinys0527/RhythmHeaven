@@ -14,7 +14,8 @@ namespace score
     // 전역 인스턴스 (내부에서만 접근)
     static Judgepoint g_judges;
     static ScoreData g_ScoreData = { 0, {0, 0, 0} };
-    ScoreData scoreData;
+    static ScoreData a_ScoreData = { 0, {0, 0, 0} };
+    ScoreData* currentScoreData;
     static FontData g_FontData = {
         // 숫자 0-9 ASCII 아트
         {
@@ -342,7 +343,7 @@ namespace score
     }
 
     // 점수를 업데이트하고 출력하는 함수
-    void PrintNumber(ScoreData* scoreData, int x, int y, int Num) {
+    void PrintNumber(ScoreData*& scoreData, int x, int y, int Num) {
         if (!scoreData) {
             scoreData = &g_ScoreData;
         }
@@ -436,7 +437,7 @@ namespace score
     }
 
     // 파일에서 최고 점수 불러오기
-    int LoadScore(ScoreData* scoreData) {
+    int LoadScore(ScoreData*& scoreData) {
         if (!scoreData) {
             scoreData = &g_ScoreData;
         }
@@ -454,7 +455,7 @@ namespace score
     }
 
     // 파일에 최고 점수 저장
-    void SaveScore(ScoreData* scoreData) {
+    void SaveScore(ScoreData*& scoreData) {
         if (!scoreData) {
             scoreData = &g_ScoreData;
         }
@@ -474,12 +475,13 @@ namespace score
             int& j_index = note::GetIndex(character);
 
             unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
-            const int tolerance = 300; //오차 범위
+            const int tolerance = 500; //오차 범위
             long long low = note[j_index].startTime - tolerance;
             long long high = note[j_index].startTime + tolerance;
      
             if (low > playPos)
             {
+                anim::Shame();
                 return;
             }
 
@@ -491,9 +493,9 @@ namespace score
                 syncStart = false;
             }
 
-            if (character->currentState == anim::AnimState::SHOUT)
+            if (character->currentState == anim::AnimState::PLAYER_SHOUT)
             {
-                JudgeShout();
+                JudgeShout(syncStart, j_index);
             }
         }
 
@@ -502,12 +504,13 @@ namespace score
             int& j_index = note::GetTutorialIndex(character);
 
             unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(1));
-            const int tolerance = 300; //오차 범위
+            const int tolerance = 500; //오차 범위
             long long low = note[j_index].startTime - tolerance;
             long long high = note[j_index].startTime + tolerance;
            
             if (low > playPos)
             {
+                anim::Shame();
                 return;
             }
 
@@ -519,9 +522,9 @@ namespace score
                 syncStart = false;
             }
 
-            if (character->currentState == anim::AnimState::SHOUT)
+            if (character->currentState == anim::AnimState::PLAYER_SHOUT)
             {
-                JudgeShout();
+                JudgeShout(syncStart, j_index);
             }
         }       
     }
@@ -531,26 +534,28 @@ namespace score
         {
             int& j_index = note::GetIndex(character);
             unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(2));
-            const int tolerance = 300; //오차 범위
+            const int tolerance = 500; //오차 범위
             long long low = note[j_index].endTime - tolerance;
             long long high = note[j_index].endTime + tolerance;
 
             if (low > playPos)
             {
+                anim::Shame();
                 return;
             }
 
             if (low <= playPos && playPos <= high) {
                 syncEnd = true;
+                JudgeScore(syncStart, syncEnd);
             }
             else
             {
                 syncEnd = false;
+                JudgeScore(syncStart, syncEnd);
             }
 
-            if (playPos > note[j_index].endTime && playPos <= note[j_index + 1].startTime)
+            if (j_index != 17)
             {
-                JudgeScore();
                 j_index++;
             }
         }
@@ -558,26 +563,28 @@ namespace score
         {
             int& j_index = note::GetTutorialIndex(character);
             unsigned int playPos = sound::GetPlayPosition(sound::GetChannel(1));
-            const int tolerance = 300; //오차 범위
+            const int tolerance = 500; //오차 범위
             long long low = note[j_index].endTime - tolerance;
             long long high = note[j_index].endTime + tolerance;
 
             if (low > playPos)
             {
+                anim::Shame();
                 return;
             }
 
             if (low <= playPos && playPos <= high) {
-                syncEnd = true; 
+                syncEnd = true;
+                JudgeScore(syncStart, syncEnd);
             }
             else
             {
                 syncEnd = false;
+                JudgeScore(syncStart, syncEnd);
             }
 
-            if (playPos > note[j_index].endTime && playPos <= note[j_index + 1].startTime)
+            if (j_index != 17)
             {
-                JudgeScore();
                 j_index++;
             }
         }
@@ -614,7 +621,7 @@ namespace score
     }
 
     // 최종 점수 표시 및 닉네임 입력 처리
-    void ShowScore(ScoreData* scoreData) {
+    void ShowScore(ScoreData*& scoreData) {
         sound::Playsound(6, sound::GetChannel(6));
         
         if (!scoreData) {
@@ -659,12 +666,12 @@ namespace score
             nowTick = GetTickCount64();
             if (nowTick - animTick >= 33)
             {
-                if (GetAsyncKeyState(VK_UP) & 1 && selectedChar < 25) {
-                    selectedChar++;
+                if (GetAsyncKeyState(VK_UP) & 1) {
+                    selectedChar = (selectedChar + 1) % 26;
                     PrintChar(myScoreX + charPosition * nickX, myScoreY + nickY, selectedChar);
                 }
-                else if (GetAsyncKeyState(VK_DOWN) & 1 && selectedChar > 0) {
-                    selectedChar--;
+                else if (GetAsyncKeyState(VK_DOWN) & 1) {
+                    selectedChar = (selectedChar - 1 + 26) % 26;
                     PrintChar(myScoreX + charPosition * nickX, myScoreY + nickY, selectedChar);
                 }
                 else if (GetAsyncKeyState(VK_RETURN) & 1) {
@@ -690,11 +697,14 @@ namespace score
         system("cls");
     }
 
-    void JudgeScore()
+    void JudgeScore(bool& syncStart, bool& syncEnd)
     {
+        ScoreData& currentScore = a_ScoreData;
         if (syncStart && syncEnd)
         {
-            a_ScoreData.currentScore -= 1;
+            currentScore.currentScore += 1;
+            syncStart = false;
+            syncEnd = false;
         }
         else
         {
@@ -702,16 +712,19 @@ namespace score
         }
     }
 
-    void JudgeShout()
+    void JudgeShout(bool& syncStart, int& index)
     {
+        ScoreData& currentScore = a_ScoreData;
         if (syncStart)
         {
-            a_ScoreData.currentScore -= 1;
+            currentScore.currentScore += 1;
+            syncStart = false;
         }
         else
         {
             anim::Shame();
         }
+        index++;
     }
 
     int GetScore()
@@ -720,8 +733,7 @@ namespace score
     }
 
     void callShowScore() {
-        Initialize(&scoreData);
-        scoreData.currentScore = a_ScoreData.currentScore;
-        score::ShowScore(&scoreData);
+        currentScoreData = &a_ScoreData;
+        score::ShowScore(currentScoreData);
     }
 }

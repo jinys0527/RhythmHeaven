@@ -101,7 +101,7 @@ namespace game
         render::GotoXY(43, 35);
         cout << "\" 메뉴 이동은 방향키 ↑ ↓" << endl;
         render::GotoXY(43, 37);
-        cout << "  클릭은 스페이스바양! \"";
+        cout << "  클릭은 엔터양! \"";
 
         while (game::GetState() == game::State::Title)
         {
