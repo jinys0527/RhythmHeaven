@@ -15,11 +15,7 @@ namespace anim
         MUTE_CHANT,         // case 2: default -> sp0 -> sp1 -> sp2 -> sp3 -> silence
         FAST_CHANT,         // case 3: silence -> sp2 -> default
         FAST_MUTE_CHANT,    // case 4: default -> sp2 -> silence
-        SHOUT,              // case 5: silence -> enter3 -> enter2 -> enter1 -> enter0
-        MUTE_SHOUT,         // case 6: enter0 -> enter1 -> enter2 -> enter3 -> silence
         PLAYER_SHOUT,       // case 7: silence -> enter3 -> enter2 -> enter1 -> enter0 -> enter0 -> enter1 -> enter2 -> enter3 -> silence
-        FAST_SHOUT,         // case 8: silence -> enter2 -> enter0
-        FAST_MUTE_SHOUT,    // case 9: enter0 -> enter2 -> silence
         SHAME,              // case 10: any -> shame
         TOGGLE_CHANT        // case 11: toggle silence <-> default
     };

@@ -50,26 +50,6 @@ namespace anim
 		"Character/Chorus_boys_silence.txt"
 	};
 
-	const char* shoutFrames[] = {
-		"Character/Chorus_boys_silence.txt",
-		"Character/Chorus_boys_enter3.txt",
-		"Character/Chorus_boys_enter2.txt",
-		"Character/Chorus_boys_enter1.txt",
-		"Character/Chorus_boys_enter0.txt",
-		"Character/Chorus_boys_enter1.txt",
-		"Character/Chorus_boys_enter2.txt",
-		"Character/Chorus_boys_enter3.txt",
-		"Character/Chorus_boys_silence.txt"
-	};
-
-	const char* muteShoutFrames[] = {
-		"Character/Chorus_boys_enter0.txt",
-		"Character/Chorus_boys_enter1.txt",
-		"Character/Chorus_boys_enter2.txt",
-		"Character/Chorus_boys_enter3.txt",
-		"Character/Chorus_boys_silence.txt"
-	};
-
 	const char* playerShoutFrames[] = {
 		"Character/Chorus_boys_silence.txt",
 		"Character/Chorus_boys_enter3.txt",
@@ -85,17 +65,6 @@ namespace anim
 		"Character/Chorus_boys_silence.txt"
 	};
 
-	const char* fastShoutFrames[] = {
-		"Character/Chorus_boys_silence.txt",
-		"Character/Chorus_boys_enter2.txt",
-		"Character/Chorus_boys_enter0.txt"
-	};
-
-	const char* fastMuteShoutFrames[] = {
-		"Character/Chorus_boys_enter0.txt",
-		"Character/Chorus_boys_enter2.txt",
-		"Character/Chorus_boys_silence.txt"
-	};
 
 	const char* shameFrames[] = {
 		"Character/Chorus_boys_shame.txt"
@@ -106,10 +75,6 @@ namespace anim
 	const int muteChantFrameCount = sizeof(muteChantFrames) / sizeof(muteChantFrames[0]);
 	const int fastChantFrameCount = sizeof(fastChantFrames) / sizeof(fastChantFrames[0]);
 	const int fastMuteChantFrameCount = sizeof(fastMuteChantFrames) / sizeof(fastMuteChantFrames[0]);
-	const int shoutFrameCount = sizeof(shoutFrames) / sizeof(shoutFrames[0]);
-	const int muteShoutFrameCount = sizeof(muteShoutFrames) / sizeof(muteShoutFrames[0]);
-	const int fastShoutFrameCount = sizeof(fastShoutFrames) / sizeof(fastShoutFrames[0]);
-	const int fastMuteShoutFrameCount = sizeof(fastMuteShoutFrames) / sizeof(fastMuteShoutFrames[0]);
 	const int playerShoutFrameCount = sizeof(playerShoutFrames) / sizeof(playerShoutFrames[0]);
 	const int shameFrameCount = sizeof(shameFrames) / sizeof(shameFrames[0]);
 
@@ -259,18 +224,6 @@ namespace anim
 			}
 			break;
 
-		case SHOUT:
-			if (character->frameIndex < shoutFrameCount)
-			{
-				isShoutAnimating = true;
-				character->currentFrame = shoutFrames[character->frameIndex];
-			}
-			else
-			{
-				ResetState(character, false, NONE);
-			}
-			break;
-
 		case PLAYER_SHOUT:
 			if (character->frameIndex < playerShoutFrameCount)
 			{
@@ -330,9 +283,6 @@ namespace anim
 		case FAST_MUTE_CHANT:
 			character->currentFrame = fastMuteChantFrames[0];
 			break;
-		case SHOUT:
-			character->currentFrame = shoutFrames[0];
-			break;
 		case SHAME:
 			character->currentFrame = shameFrames[0];
 			break;
@@ -353,7 +303,7 @@ namespace anim
 			character->currentState = CHANT;
 			break;
 		case note::noteType::Shout:
-			character->currentState = SHOUT;
+			character->currentState = PLAYER_SHOUT;
 			break;
 		}
 	}
@@ -392,10 +342,7 @@ namespace anim
 					{
 						character->currentState = FAST_CHANT;
 					}
-					else if (character->currentState == SHOUT)
-					{
-						character->currentState = FAST_SHOUT;
-					}
+
 					bool animEnd = AIAnimEnd(character, note[index].duration);
 					while (!animEnd)
 					{
@@ -435,10 +382,7 @@ namespace anim
 					{
 						character->currentState = FAST_CHANT;
 					}
-					else if (character->currentState == SHOUT)
-					{
-						character->currentState = FAST_SHOUT;
-					}
+
 					bool animEnd = AIAnimEnd(character, note[index].duration);
 					while (!animEnd)
 					{
@@ -476,14 +420,6 @@ namespace anim
 		case FAST_CHANT:
 			StartAnimation(character, FAST_CHANT);
 			animTime = 33 * fastMuteChantFrameCount;
-			break;
-		case SHOUT:
-			StartAnimation(character, SHOUT);
-			animTime = 33 * shoutFrameCount;
-			break;
-		case FAST_SHOUT:
-			StartAnimation(character, FAST_SHOUT);
-			animTime = 33 * fastShoutFrameCount;
 			break;
 		case TOGGLE_CHANT:
 			animTime = 0;
