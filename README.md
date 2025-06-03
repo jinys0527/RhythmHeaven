@@ -3,7 +3,7 @@
 ## 리듬천국 "Glee Club" 콘솔화 프로젝트
 
 ### Youtube
-https://youtu.be/TKX9cfk0vrY
+https://youtu.be/wPuPFiHqEC0
 
 ### 프로젝트 개요
 본 프로젝트는 게임인재원 7기 1분기 콘솔 게임 프로젝트로, 닌텐도의 인기 미니게임 '리듬천국'의 "Glee Club(합창단)" 게임을 콘솔 환경에서 구현하는 것을 목표로 합니다.
